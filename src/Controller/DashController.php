@@ -13,6 +13,7 @@ class DashController extends AbstractController
     {
         return $this->render('app/index.html.twig', [
             'controller_name' => 'DashController',
+            'user' => $this->getUser()
         ]);
     }
 }
