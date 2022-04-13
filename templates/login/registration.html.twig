@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Novo Membro - Ações Baratas{% endblock %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{{ asset('/app_login/css/registration.css') }}">
+{% endblock %}
+
+{% block body %}
+<form class="form-signin" action="{{ path('app_register') }}" method="POST">
+  <div class="text-center mb-4">
+    <i class="material-icons">wallet</i>    
+    <h1 class="h3 mb-3 font-weight-normal">Ações Baratas</h1>
+    <p></p>
+  </div>
+  
+  <div class="form-label-group">
+    <input type="text" class="form-control" id="name" name="_name" placeholder="Nome">
+  </div>
+
+  <div class="form-label-group">
+    <input type="email" class="form-control" id="email" name="_email" placeholder="E-mail">
+  </div>
+
+  <div class="form-label-group">
+    <input type="password" class="form-control" id="password" name="_password" placeholder="Senha">
+  </div>
+
+  <div class="form-label-group">
+    <input type="password" class="form-control" id="password2" placeholder="Repita a Senha">
+  </div>
+
+  <div class="form-label-group">
+    <button type="submit" class="btn btn-primary">Cadastrar</button>
+  </div>
+
+  <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+</form>
+{% endblock %}

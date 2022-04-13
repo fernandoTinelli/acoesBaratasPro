@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+  <link href="{{ asset('/app_index/css/custom.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+  <div class="wrapper">
+    <div class="body-overlay"></div>
+
+    {# ---SideBar--- #}
+    <nav id="sidebar">
+      <div class="sidebar-header">
+        <h3><img src="{{ asset('/app_index/images/logo.png')}}" class="img-fluid"/><span>Ações Baratas</span></h3>
+      </div>
+
+      <ul class="list-unstyled components">
+        <li class="active">
+          <a href="#" class="dashboard"><i class="material-icons">account_balance_wallet</i><span>Carteira</span></a>
+        </li>
+
+        <li class="">
+          <a href="#"><i class="material-icons">circle_notifications</i><span>Avisos</span></a>
+        </li>
+
+        <li class="">
+          <a href="#"><i class="material-icons">list</i><span>Lista de Ações Baratas</span></a>
+        </li>
+
+        <li class="dropdown">
+          <a href="#homeSubmenu1" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+            <i class="material-icons">settings</i><span>Configurações</span>
+          </a>
+          <ul class="collapse list-unstyled menu" id="homeSubmenu1">
+            <li><a href="#">Perfil</a></li>
+            <li><a href="#">Lista de Rejeição</a></li>
+            <li><a href="#">Ações</a></li>
+          </ul>
+        </li>
+
+        <li class="">
+          <a href="#"><i class="material-icons">timeline</i><span>Estatísticas</span></a>
+        </li>
+      </ul>
+
+      <ul class="list-unstyled components sidebar-footer">
+        <li class="">
+          <a href="{{ path('app_logout') }}"><i class="material-icons">logout</i><span>Sair</span></a>
+        </li>
+      </ul>
+    </nav>
+
+    {# ---Page Content--- #}
+    <div id="content">
+
+      {# ---Top Navbar--- #}
+      <div class="top-navbar">
+        <nav class="navbar navbar-expand-lg">
+          <div class="container-fluid">
+            <button type="button" id="sidebar-collapse" class="d-xl-block d-lg-block d-md-mone d-none">
+              <span class="material-icons">arrow_back_ios</span>
+            </button>
+        
+            <a class="navbar-brand" href="#">path</a>
+            <button class="d-inline-block d-lg-none ml-auto more-button" type="button" data-toggle="collapse"
+              data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="material-icons">more_vert</span>
+            </button>
+
+            <div class="collapse navbar-collapse d-lg-block d-xl-block d-sm-none d-md-none d-none" id="navbarSupportedContent">
+              <ul class="nav navbar-nav ml-auto">   
+                <li class="dropdown nav-item active">
+                  <a href="#" class="nav-link" data-toggle="dropdown">
+                    <span class="material-icons">notifications</span>
+                    <span class="notification">1</span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="#">You have 5 new messages</a>
+                    </li>            
+                  </ul>
+                </li>
+
+                <li class="dropdown nav-item">
+                  <a href="#" class="nav-link" data-toggle="dropdown">
+                    <span class="material-icons">person</span><span class="user">user.name</span>
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li>
+                      <a href="#">Sair</a>
+                    </li>            
+                  </ul>
+                </li>
+
+                {# <li class="nav-item">
+                  <a class="nav-link" href="#">
+                    <span class="material-icons">settings</span>
+                  </a>
+                </li> #}
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <div class="main-content">
+        {% block page_contents %}{% endblock %}
+
+        {# ---Footer Content--- #}
+
+        <footer class="footer">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-6">
+                <nav class="d-flex">
+                  <ul class="m-0 p-0">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Company</a></li>
+                  </ul>
+                </nav>
+              </div>
+
+              <div class="col-md-6">
+                <p class="copyright d-flex justify-content-end">
+                  &copy 2022
+                  <a href="#">Tinelli</a>, Fernando
+                </p>
+              </div>
+
+            </div>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+
+{% block javascripts %}
+  <script type="text/javascript">
+    $().ready(() => {
+      $("#sidebar-collapse").on('click', () => {
+        $('#sidebar').toggleClass('active');
+        $('#content').toggleClass('active');
+      });
+
+      $(".more-button, .body-overlay").on('click', () => {
+        $('#sidebar, .body-overlay').toggleClass('show-nav');
+      });
+    });
+  </script>
+{% endblock %}

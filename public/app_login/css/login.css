@@ -1,0 +1,141 @@
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  background-color: #f5f5f5;
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+
+.form-signin .checkbox {
+  font-weight: 400;
+}
+
+.form-signin .form-floating:focus-within {
+  z-index: 2;
+}
+
+.form-signin input[type="email"] {
+  margin-bottom: -1px;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.form-signin input[type="password"] {
+  margin-bottom: 10px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+.bd-placeholder-img {
+  font-size: 1.125rem;
+  text-anchor: middle;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.flash-message {
+  position: absolute;
+  top: 5%;
+  text-align: center;
+  background-color: #ffffff;
+  padding: 0.4em;
+  border-radius: 5px 0 0 5px;
+  border-left: 50px solid;
+}
+
+@media (min-width: 768px) {
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+  }
+
+  .flash-message {
+    width: 400px;
+    left: calc(100% - 420px);
+  }
+}
+
+@media (max-width: 768px) {
+  .bd-placeholder-img-lg {
+    font-size: 3.5rem;
+  }
+
+  .flash-message {
+    width: 300px;
+    left: calc(50% - 150px);;
+  }
+}
+
+.flash-success {
+  border-left-color: #99f990;
+}
+
+.flash-success::after {
+  content: '\2705';
+  position:absolute;
+  right:0;
+  width:40px;
+}
+
+.flash-error {
+  border-left-color: #f99090;
+}
+
+.flash-error::before {
+  content: '\274C';
+  position:absolute;
+  right:0;
+  width:40px;
+}
+
+.flash-info {
+  border-left-color: #90e0f9;
+}
+
+.with-line {
+  margin-top: 10px;
+  text-transform: uppercase;
+  text-shadow: 1px salmon;
+}
+
+.with-line::before {
+  content: "-- ";
+  color: black;
+}
+
+.with-line::after {
+  content: " --";
+  color: black;
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.fade-out {
+  animation-name: fade-out;
+}
+
+.animated {
+  animation-delay: 8s;
+  animation-duration: 0.5s;
+  animation-fill-mode: both;
+}

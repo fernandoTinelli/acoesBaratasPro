@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Login - Ações Baratas{% endblock %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" href="{{ asset('/app_login/css/login.css') }}">
+{% endblock %}
+
+{% block body %}
+  <form class="form-signin" action="{{ path('app_login')}}" method="post">
+    <div class="text-center mb-4">
+      <i class="material-icons">wallet</i>    
+      <h1 class="h3 mb-3 font-weight-normal">Ações Baratas</h1>
+      <p></p>
+    </div>
+
+    <div class="form-label-group mb-3">
+      <input type="email" id="inputEmail" name="_username" value="{{ last_username }}" class="form-control" placeholder="E-mail" required autofocus>
+    </div>
+
+    <div class="form-label-group">
+      <input type="password" id="inputPassword" name="_password" class="form-control" placeholder="Senha" required>
+    </div>
+
+    <div class="checkbox mb-3">
+      <label>
+        <input type="checkbox" value="remember-me"> Lembre-se de mim
+      </label>
+    </div>
+
+    <button class="btn btn-lg btn-primary btn-block" type="submit">Logar</button>
+    <button class="btn btn-lg btn-secondary btn-block" type="submit">Logar com o Facebook</button>
+
+    <div class="form-group">
+      <p class="text-center with-line">ou</p>
+
+      <a class="btn btn-lg btn-dark btn-block" href="{{ path('app_registration') }}">Registre-se!</a>
+    </div>
+
+    <p class="mt-5 mb-3 text-muted text-center">&copy; 2022</p>
+
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+  </form>
+
+  {% if error %}
+    <div class="flash-message flash-error animated fade-out">
+      E-mail ou Senha incorreto.
+    </div>
+  {% endif %}
+
+  {# read and display several types of flash messages #}
+  { {% for label, messages in app.flashes(['success', 'error', 'info']) %}
+      {% for message in messages %}
+      <div class="flash-message flash-{{ label }} animated fade-out">
+        {{ message }}
+      </div>
+      {% endfor %}
+  {% endfor %}
+{% endblock %}
+
+{% block javascripts%}
+<script>
+  $().ready(() => {
+    let flashMessage = document.querySelector('.flash-message');
+    if (flashMessage) {
+      flashMessage      
+        .addEventListener('click', (event) => {
+          event.target.remove();
+        });
+    }
+  });
+</script>
+{% endblock %}
