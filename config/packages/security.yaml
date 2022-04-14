@@ -21,11 +21,11 @@ security:
             lazy: true
             provider: app_user_provider
             form_login:
-                login_path: app_login
-                check_path: app_login
+                login_path: login_index
+                check_path: login_index
                 enable_csrf: true
             logout:
-                path: app_logout
+                path: login_logout
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -40,6 +40,7 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/dash, roles: [ROLE_USER, ROLE_ADMIN] }
+        - { path: ^/acoes, roles: ROLE_ADMIN }
 
 when@test:
     security:

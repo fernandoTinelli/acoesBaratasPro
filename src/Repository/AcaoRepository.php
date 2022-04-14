@@ -45,6 +45,17 @@ class AcaoRepository extends ServiceEntityRepository
         }
     }
 
+    public function flush()
+    {
+        $this->_em->flush();
+    }
+
+    public function removeAll()
+    {
+        $query = $this->_em->getConnection()->prepare('delete from acao');
+        $query->executeQuery();
+    }
+
     // /**
     //  * @return Acao[] Returns an array of Acao objects
     //  */

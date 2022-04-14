@@ -9,49 +9,55 @@
                     <h4>Cadastrar Ação</h4>
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-xs-12 text-right">
-                            <a href="#salvar" class="btn btn-primary text-white">Salvar</a>
-                            <a href="{{ path('app_acoes') }}" class="btn btn-secondary text-white">Voltar</a>
+                            <a href="#salvar" class="btn btn-primary text-white" onclick="frm.submit();">Salvar</a>
+                            <a href="{{ path('app_acoes_index') }}" class="btn btn-secondary text-white">Voltar</a>
                         </div>
                     </div>
                 </div>
                 <div class="card-content">
-                    <form action="{{ path('app_novo') }}" method="post">
+                    {% if acao is defined %}
+                        <form id="frm" action="{{ path('app_acoes_new_create', {id: acao.id}) }}" method="post">
+                    {% else %}
+                        <form id="frm" action="{{ path('app_acoes_new_create') }}" method="post">
+                    {% endif %}
                         <div class="form-group row">
-                            <label for="" class="col-sm-2 col-form-label">Código</label>
+                            <label for="codigo" class="col-sm-2 col-form-label">Código</label>
                             <div class="col-sm-10">
-                              <input type="text" class="form-control" id="" placeholder="VALE3" autofocus>
+                              <input type="text" value="{{ acao.codigo|default('') }}" class="form-control" id="codigo" name="_codigo" placeholder="VALE3" autofocus required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="" class="col-sm-2 col-form-label">Nome</label>
+                            <label for="nome" class="col-sm-2 col-form-label">Nome</label>
                             <div class="col-sm-10">
-                              <input type="text" class="form-control" id="" placeholder="Vale S.A.">
+                              <input type="text" value="{{ acao.nome|default('') }}" class="form-control" id="nome" name="_nome" placeholder="VALE" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="" class="col-sm-2 col-form-label">Preço Unitário</label>
+                            <label for="preco" class="col-sm-2 col-form-label">Preço Unitário</label>
                             <div class="col-sm-10">
-                              <input type="number" class="form-control" id="" value="0" step="0.01">
+                              <input type="number" value="{{ acao.preco|default(0) }}" class="form-control" id="preco" name="_preco" value="0" step="0.01" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="" class="col-sm-2 col-form-label">Liquidez</label>
+                            <label for="liquidez" class="col-sm-2 col-form-label">Liquidez</label>
                             <div class="col-sm-10">
-                              <input type="number" class="form-control" id="" value="0" step="0.01">
+                              <input type="number" value="{{ acao.liquidez|default(0) }}" class="form-control" id="liquidez" name="_liquidez" value="0" step="0.01" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="" class="col-sm-2 col-form-label">Margem Ebit (%)</label>
+                            <label for="margem_ebit" class="col-sm-2 col-form-label">Margem Ebit (%)</label>
                             <div class="col-sm-10">
-                              <input type="number" class="form-control" id="" value="0" step="0.01">
+                              <input type="number" value="{{ acao.margemEbit|default(0) }}" class="form-control" id="margem_ebit" name="_margem_ebit" value="0" step="0.01" required>
                             </div>
                         </div>
                         <div class="form-group row">
-                            <label for="" class="col-sm-2 col-form-label">Ev Ebit</label>
+                            <label for="ev_ebit" class="col-sm-2 col-form-label">Ev Ebit</label>
                             <div class="col-sm-10">
-                              <input type="number" class="form-control" id="" value="0" step="0.01">
+                              <input type="number" value="{{ acao.evEbit|default(0) }}" class="form-control" id="ev_ebit" name="_ev_ebit" value="0" step="0.01" required>
                             </div>
                         </div>
+
+                        <input type="hidden" name="_id" value="{{ acao.id|default('') }}">
                     </form>
                 </div>
             </div>

@@ -23,17 +23,16 @@ class RegistrationController extends AbstractController
     $this->userRepository = $userRepository;
   }
 
-  #[Route('/registration', name: 'app_registration', methods: ['GET'])]
+  #[Route('/registration', name: 'login_registration_index', methods: ['GET'])]
   public function index(Request $request): Response
   {
     return $this->render('login/registration.html.twig');
   }
 
-  #[Route('/registration', name: 'app_register', methods: ['POST'])]
-  public function register(Request $request, UserPasswordHasherInterface $passwordHasher)
+  #[Route('/registration', name: 'login_registration_create', methods: ['POST'])]
+  public function create(Request $request, UserPasswordHasherInterface $passwordHasher)
   {
-    $dataRequest = $request->request->all();
-    $user = $this->userFactory->create($dataRequest, $passwordHasher);
+    $user = $this->userFactory->create($request->request->all(), $passwordHasher);
 
     $this->userRepository->add($user, true);
 
@@ -42,6 +41,6 @@ class RegistrationController extends AbstractController
       'Cadastro realizado com sucesso!'
     );
 
-    return $this->redirectToRoute('app_login', [], 201);
+    return $this->redirectToRoute('login_index', [], Response::HTTP_CREATED);
   }
 }

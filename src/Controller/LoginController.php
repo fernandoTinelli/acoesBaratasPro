@@ -10,11 +10,11 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class LoginController extends AbstractController
 {
-    #[Route('/login', name: 'app_login')]
+    #[Route('/login', name: 'login_index')]
     public function index(AuthenticationUtils $authenticationUtils): Response
     {
         if(!is_null($this->getUser())){
-            return $this->redirectToRoute('app_dash');
+            return $this->redirectToRoute('app_index');
         }
 
         $error = $authenticationUtils->getLastAuthenticationError();
@@ -27,7 +27,7 @@ class LoginController extends AbstractController
         ]);
     }
 
-    #[Route('/logout', name: 'app_logout', methods: ['GET'])]
+    #[Route('/logout', name: 'login_logout', methods: ['GET'])]
     public function logout()
     {
         // controller can be blank: it will never be called!

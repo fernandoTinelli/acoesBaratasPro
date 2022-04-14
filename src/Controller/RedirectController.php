@@ -11,6 +11,6 @@ class RedirectController extends AbstractController
     #[Route('/', name: 'app')]
     public function app(): Response
     {
-        return $this->redirectToRoute('app_dash');
+        return $this->redirectToRoute('app_index');
     }
 }
