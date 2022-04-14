@@ -17,7 +17,7 @@ use Symfony\Component\Serializer\Serializer;
 
 class AcoesController extends AbstractController
 {
-    public static string $SPREADSHEET_FILE_NAME = 'spreadsheet.xlsx';
+    public static $SPREADSHEET_FILE_NAME = 'spreadsheet.xlsx';
 
     private AcaoRepository $acaoRepository;
 
@@ -27,14 +27,20 @@ class AcoesController extends AbstractController
     }
 
     #[Route('/acoes', name: 'app_acoes_index')]
-    public function index(): Response
+    public function index(Request $request): Response
     {
-        $acoes = $this->acaoRepository->findAll();
+        $offset = $request->query->getInt('offset', 0);
+        $order = $request->query->getAlpha('order', 'ASC');
+        $paginator = $this->acaoRepository->getAcaoPaginator($offset, $order);
 
         return $this->render('app/acoes/index.html.twig', [
             'controller_name' => 'AcoesController',
             'user' => $this->getUser(),
-            'acoes' => $acoes
+            'acoes' => $paginator,
+            'previous' => $offset - 10,
+            'next' => min(count($paginator), $offset + 10),
+            'offset' => $offset,
+            'order' => $order
         ]);
     }
 

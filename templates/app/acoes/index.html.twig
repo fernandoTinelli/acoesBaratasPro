@@ -19,11 +19,12 @@
                 <div class="card-header card-header-text">
                     <h4 class="card-title">Ações</h4>
                     <div class="row">
-                        <div class="col-lg-3 col-md-3 col-sm-12">
-                            <p class="category">Última Atualização: 15th December, 2016</p>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <p class="category">Total: {{ acoes|length }}</p>
+                            <p class="category mt-0">Última Atualização: 15th December, 2016</p>
                         </div>
 
-                        <div class="col-lg-9 col-md-9 col-sm-12 text-right">
+                        <div class="col-lg-6 col-md-6 col-sm-12 text-right">
                             <a href="{{ path('app_acoes_new_index') }}" class="btn btn-primary text-white">Novo</a>
                             <a href="#" class="btn btn-success text-white" onclick="document.querySelector('#file').click();">Carregar Planilha Invest</a>
                         </div>
@@ -34,7 +35,11 @@
                         <thead class="text-primary">
                             <tr>
                                 <th><input type="checkbox" name="" id="" class="checkbox"></th>
-                                <th>Código</th>
+                                {% if order == 'ASC' %}
+                                    <th>Código <a id="orderBy" href="{{ path('app_acoes_index', {offset: offset|default(0), order: 'DESC'})}}"><i class="material-icons">arrow_drop_up</i></a></th>    
+                                {% else %}
+                                    <th>Código <a id="orderBy" href="{{ path('app_acoes_index', {offset: offset|default(0), order: 'ASC'})}}"><i class="material-icons">arrow_drop_down</i></a></th>
+                                {% endif %}
                                 <th>Nome</th>
                                 <th>Preço Unitário</th>
                                 <th>Liquidez</th>
@@ -67,6 +72,16 @@
                             {% endfor %}
                         </tbody>
                     </table>
+
+                    <div class="text-center">
+                        {% if previous >= 0 %}
+                            <a id="previous" href="{{ path('app_acoes_index', {offset: previous}) }}"><i class="material-icons">arrow_circle_left</i></a>
+                        {% endif %}
+                            
+                        {% if next < acoes|length %}
+                            <a id="next" href="{{ path('app_acoes_index', {offset: next}) }}"><i class="material-icons">arrow_circle_right</i></a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         </div>
@@ -78,11 +93,12 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script>
+    <script type="text/javascript">
         $().ready(() => {
             document.querySelector('#file').addEventListener('change', () => {
                 frm.submit();
-            })
+            });
         });
     </script>
+    {# <script src="{{ asset('/app_index/js/acoes.index.js') }}" type="text/javascript"></script> #}
 {% endblock javascripts %}
