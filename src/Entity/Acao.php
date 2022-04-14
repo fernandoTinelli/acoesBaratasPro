@@ -31,6 +31,9 @@ class Acao
     #[ORM\Column(type: 'float')]
     private $ev_ebit;
 
+    #[ORM\OneToOne(mappedBy: 'acao', targetEntity: AcaoRejeitada::class, cascade: ['persist', 'remove'])]
+    private $acaoRejeitada;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -104,6 +107,23 @@ class Acao
     public function setEvEbit(float $ev_ebit): self
     {
         $this->ev_ebit = $ev_ebit;
+
+        return $this;
+    }
+
+    public function getAcaoRejeitada(): ?AcaoRejeitada
+    {
+        return $this->acaoRejeitada;
+    }
+
+    public function setAcaoRejeitada(AcaoRejeitada $acaoRejeitada): self
+    {
+        // set the owning side of the relation if necessary
+        if ($acaoRejeitada->getAcao() !== $this) {
+            $acaoRejeitada->setAcao($this);
+        }
+
+        $this->acaoRejeitada = $acaoRejeitada;
 
         return $this;
     }

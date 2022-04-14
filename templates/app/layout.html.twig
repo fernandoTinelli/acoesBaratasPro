@@ -26,7 +26,7 @@
 
         {% if is_granted('ROLE_USER') %}
         <li class="">
-          <a href="#"><i class="material-icons">list</i><span>Lista de Ações Baratas</span></a>
+          <a href="{{ path('app_lista_acoes_baratas_index') }}"><i class="material-icons">list</i><span>Lista de Ações Baratas</span></a>
         </li>
         {% endif %}
 
@@ -48,6 +48,7 @@
 
             {% if is_granted('ROLE_ADMIN') %}
             <li><a href="{{ path ('app_acoes_index') }}">Ações</a></li>
+            <li><a href="{{ path ('app_acoes_rejeitadas_index') }}">Ações Rejeitadas</a></li>
             {% endif %}
           </ul>
         </li>

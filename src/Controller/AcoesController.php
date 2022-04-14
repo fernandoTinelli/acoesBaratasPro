@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Helper\AcaoFactory;
 use App\Helper\ReaderSpreadsheet;
 use App\Repository\AcaoRepository;
+use App\Trait\DefaultVariablesControllers;
 use phpDocumentor\Reflection\DocBlock\Tags\Var_;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -17,6 +18,8 @@ use Symfony\Component\Serializer\Serializer;
 
 class AcoesController extends AbstractController
 {
+    use DefaultVariablesControllers;
+
     public static $SPREADSHEET_FILE_NAME = 'spreadsheet.xlsx';
 
     private AcaoRepository $acaoRepository;
@@ -33,24 +36,22 @@ class AcoesController extends AbstractController
         $order = $request->query->getAlpha('order', 'ASC');
         $paginator = $this->acaoRepository->getAcaoPaginator($offset, $order);
 
-        return $this->render('app/acoes/index.html.twig', [
-            'controller_name' => 'AcoesController',
-            'user' => $this->getUser(),
-            'acoes' => $paginator,
-            'previous' => $offset - 10,
-            'next' => min(count($paginator), $offset + 10),
-            'offset' => $offset,
-            'order' => $order
-        ]);
+        $variables = $this->defaultVariables();
+        $variables['acoes'] = $paginator;
+        $variables['previous'] = $offset - AcaoRepository::$PAGINATOR_PER_PAGE;
+        $variables['next'] = min(count($paginator), $offset + AcaoRepository::$PAGINATOR_PER_PAGE);
+        $variables['offset'] = $offset;
+        $variables['order'] = $order;
+
+        return $this->render('app/acoes/index.html.twig', $variables);
     }
 
     #[Route('/acoes/novo', name: 'app_acoes_new_index', methods: ['GET'])]
     public function add()
     {
-        return $this->render('app/acoes/new.html.twig', [
-            'controller_name' => 'AcoesController',
-            'user' => $this->getUser()
-        ]);
+        $variables = $this->defaultVariables();
+
+        return $this->render('app/acoes/new.html.twig', $variables);
     }
 
     #[Route('/acoes/novo/{id<\d+>?}', name: 'app_acoes_new_create', methods: ['POST'])]
@@ -84,11 +85,10 @@ class AcoesController extends AbstractController
     {
         $acao = $this->acaoRepository->find($id);
 
-        return $this->render('app/acoes/new.html.twig', [
-            'controller_name' => 'AcoesController',
-            'user' => $this->getUser(),
-            'acao' => $acao
-        ]);
+        $variables = $this->defaultVariables();
+        $variables['acao'] = $acao;
+
+        return $this->render('app/acoes/new.html.twig', $variables);
     }
 
     #[Route('/acoes/delete/{id}', name: 'app_acoes_delete', methods: ['GET'])]
