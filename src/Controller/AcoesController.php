@@ -22,16 +22,20 @@ class AcoesController extends BaseController
     #[Route('/acoes', name: 'app_acoes_index')]
     public function index(Request $request): Response
     {
-        $offset = $request->query->getInt('offset', 0);
+        $offset = ($request->query->getInt('offset', 0) % AcaoRepository::$PAGINATOR_PER_PAGE) !== 0 
+            ? 0 
+            : $request->query->getInt('offset', 0);
+            
         $order = $request->query->getAlpha('order', 'ASC');
         $paginator = $this->acaoRepository->getAcaoPaginator($offset, $order);
    
-        $this
-            ->setVariable('acoes', $paginator)
-            ->setVariable('previous', $offset - AcaoRepository::$PAGINATOR_PER_PAGE)
-            ->setVariable('next', min(count($paginator), $offset + AcaoRepository::$PAGINATOR_PER_PAGE))
-            ->setVariable('offset', $offset)
-            ->setVariable('order', $order);
+        $this->setVariables([
+            'acoes' => $paginator,
+            'previous' => $offset - AcaoRepository::$PAGINATOR_PER_PAGE,
+            'next' => min(count($paginator), $offset + AcaoRepository::$PAGINATOR_PER_PAGE),
+            'offset' => $offset,
+            'order'=> $order
+        ]);
 
         return $this->render('app/acoes/index.html.twig', $this->getVariables());
     }

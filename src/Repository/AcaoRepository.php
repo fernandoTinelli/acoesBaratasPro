@@ -91,7 +91,7 @@ class AcaoRepository extends ServiceEntityRepository
                 ->getResult();
     }
 
-    public function findAllWithOrWithoutJoin()
+    public function findAllWithLeftJoin()
     {
         return $this->createQueryBuilder('a')
                 ->leftJoin('a.acaoRejeitada', 'ar')

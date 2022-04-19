@@ -21,6 +21,14 @@ class BaseController extends AbstractController
         return $this;
     }
 
+    final protected function setVariables(array $variables): BaseController
+	{
+		$this->variables ??= $this->defaultVariables();
+		$this->variables = [...$this->variables, ...$variables];
+		
+		return $this;
+	}
+
     final protected function getVariables(): array
     {
         $this->variables ??= $this->defaultVariables();
