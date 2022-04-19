@@ -106,17 +106,27 @@ class AcoesController extends BaseController
             "{$this->getParameter('kernel.project_dir')}/public/uploads"
         );
 
-        $acaoRejeitadaRepository->removeAll();
-
-        $this->acaoRepository->removeAll();
+        $acoes = $this->acaoRepository->findAll();
+        foreach ($acoes as $acao) {
+            $indexedAcoes[$acao->getCodigo()] = $acao;
+        }
 
         $arrayAcoes = $acaoFactory->createMany($dataRequest);
         foreach ($arrayAcoes as $acao) {
-            $this->acaoRepository->add($acao);
+            if (array_key_exists($acao->getCodigo(), $indexedAcoes)) {
+                $indexedAcoes[$acao->getCodigo()]
+                    ->setPreco($acao->getPreco())
+                    ->setLiquidez($acao->getLiquidez())
+                    ->setMargemEbit($acao->getMargemEbit())
+                    ->setEvEbit($acao->getEvEbit());
+            } else {
+                $indexedAcoes[$acao->getCodigo()] = $acao;
+            }
+
+            $this->acaoRepository->add($indexedAcoes[$acao->getCodigo()], false);
         }
 
-        $this->acaoRepository->flush(); 
-        $acaoRejeitadaRepository->flush();       
+        $this->acaoRepository->flush();    
 
         $this->addFlash(
             'success',
