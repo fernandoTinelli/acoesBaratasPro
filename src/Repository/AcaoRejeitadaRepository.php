@@ -45,6 +45,17 @@ class AcaoRejeitadaRepository extends ServiceEntityRepository
         }
     }
 
+    public function removeAll()
+    {
+        $query = $this->_em->getConnection()->prepare('delete from acao');
+        $query->executeQuery();
+    }
+
+    public function flush()
+    {
+        $this->_em->flush();
+    }
+
     // /**
     //  * @return AcaoRejeitada[] Returns an array of AcaoRejeitada objects
     //  */

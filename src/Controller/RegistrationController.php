@@ -14,13 +14,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class RegistrationController extends AbstractController
 {
-  private UserFactory $userFactory;
-  private UserRepository $userRepository;
-
-  public function __construct(UserFactory $userFactory, UserRepository $userRepository)
+  public function __construct(private UserFactory $userFactory, private UserRepository $userRepository)
   {
-    $this->userFactory = $userFactory;
-    $this->userRepository = $userRepository;
   }
 
   #[Route('/registration', name: 'login_registration_index', methods: ['GET'])]

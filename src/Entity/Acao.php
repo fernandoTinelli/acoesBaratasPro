@@ -34,6 +34,13 @@ class Acao
     #[ORM\OneToOne(mappedBy: 'acao', targetEntity: AcaoRejeitada::class, cascade: ['persist', 'remove'])]
     private $acaoRejeitada;
 
+    private function setId(int $id): self
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -116,11 +123,11 @@ class Acao
         return $this->acaoRejeitada;
     }
 
-    public function setAcaoRejeitada(AcaoRejeitada $acaoRejeitada): self
+    public function setAcaoRejeitada(?AcaoRejeitada $acaoRejeitada): self
     {
         // set the owning side of the relation if necessary
-        if ($acaoRejeitada->getAcao() !== $this) {
-            $acaoRejeitada->setAcao($this);
+        if ($acaoRejeitada?->getAcao() !== $this) {
+            $acaoRejeitada?->setAcao($this);
         }
 
         $this->acaoRejeitada = $acaoRejeitada;

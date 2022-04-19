@@ -71,6 +71,35 @@ class AcaoRepository extends ServiceEntityRepository
         return new Paginator($query);
     }
 
+    public function findAllSimplified(array $columns = null)
+    {
+        if (!is_null($columns)) {
+            $columns = array_map(fn($value) => 'a.' . $value, $columns);
+        }
+
+        return $this->createQueryBuilder('a')
+                ->select($columns ?? [])
+                ->getQuery()
+                ->execute();
+    }
+
+    public function findAllWithJoin()
+    {
+        return $this->createQueryBuilder('a')
+                ->innerJoin('a.acaoRejeitada', 'ar')
+                ->getQuery()
+                ->getResult();
+    }
+
+    public function findAllWithOrWithoutJoin()
+    {
+        return $this->createQueryBuilder('a')
+                ->leftJoin('a.acaoRejeitada', 'ar')
+                ->orderBy('a.codigo', 'ASC')
+                ->getQuery()
+                ->getResult();
+    }
+
     // /**
     //  * @return Acao[] Returns an array of Acao objects
     //  */

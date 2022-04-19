@@ -10,26 +10,20 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class ListaAcoesBaratasController extends AbstractController
+class ListaAcoesBaratasController extends BaseController
 {
-    use DefaultVariablesControllers;
-
     private static $MIN_LIQUIDEZ_ACCEPTED = 200000;
     private static $MIN_MARGEM_EBIT_ACCPETED = 0;
     private static $ARR_ACOES_NUM_CODIGO_RECUSADAS = [33];
 
-    private AcaoRepository $acaoRepository;
-
-    public function __construct(AcaoRepository $acaoRepository)
+    public function __construct(private AcaoRepository $acaoRepository)
     {
-        $this->acaoRepository = $acaoRepository;
+        parent::__construct();
     }
 
     #[Route('/lista/acoes/baratas', name: 'app_lista_acoes_baratas_index')]
     public function index(Request $request): Response
     {
-        $variables = $this->defaultVariables();
-
         $acoes = $this->acaoRepository->findAll();
         $acoesAccepteds = array();
 
@@ -58,14 +52,14 @@ class ListaAcoesBaratasController extends AbstractController
         ]);
 
         $offset = $request->query->getInt('offset', 0);
-        $variables = $this->defaultVariables();
-        $variables['acoes'] = $acoesAccepteds;
-        $variables['acoesShow'] = array_slice($acoesAccepteds, $offset, min(count($acoesAccepteds), AcaoRepository::$PAGINATOR_PER_PAGE));
-        $variables['previous'] = $offset - AcaoRepository::$PAGINATOR_PER_PAGE;
-        $variables['next'] = min(count($acoesAccepteds), $offset + AcaoRepository::$PAGINATOR_PER_PAGE);
-        $variables['offset'] = $offset;
+        $this
+            ->setVariable('acoes', $acoesAccepteds)
+            ->setVariable('acoesShow', array_slice($acoesAccepteds, $offset, min(count($acoesAccepteds), AcaoRepository::$PAGINATOR_PER_PAGE)))
+            ->setVariable('previous', $offset - AcaoRepository::$PAGINATOR_PER_PAGE)
+            ->setVariable('next', min(count($acoesAccepteds), $offset + AcaoRepository::$PAGINATOR_PER_PAGE))
+            ->setVariable('offset', $offset);
 
-        return $this->render('app/lista_acoes_baratas/index.html.twig', $variables);
+        return $this->render('app/lista_acoes_baratas/index.html.twig', $this->getVariables());
     }
 
     static private function sortAcoes(Acao $acao1, Acao $acao2) {

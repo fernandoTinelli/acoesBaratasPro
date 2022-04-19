@@ -4,7 +4,6 @@ namespace App\Helper;
 
 use PhpOffice\PhpSpreadsheet\Reader\IReadFilter;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class ReaderSpreadsheet implements IReadFilter
 {

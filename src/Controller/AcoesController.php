@@ -4,29 +4,19 @@ namespace App\Controller;
 
 use App\Helper\AcaoFactory;
 use App\Helper\ReaderSpreadsheet;
+use App\Repository\AcaoRejeitadaRepository;
 use App\Repository\AcaoRepository;
-use App\Trait\DefaultVariablesControllers;
-use phpDocumentor\Reflection\DocBlock\Tags\Var_;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
-use Symfony\Component\Serializer\Encoder\CsvEncoder;
-use Symfony\Component\Serializer\Serializer;
 
-class AcoesController extends AbstractController
+class AcoesController extends BaseController
 {
-    use DefaultVariablesControllers;
-
     public static $SPREADSHEET_FILE_NAME = 'spreadsheet.xlsx';
 
-    private AcaoRepository $acaoRepository;
-
-    public function __construct(AcaoRepository $acaoRepository)
+    public function __construct(private AcaoRepository $acaoRepository)
     {
-        $this->acaoRepository = $acaoRepository;
+        parent::__construct();
     }
 
     #[Route('/acoes', name: 'app_acoes_index')]
@@ -35,23 +25,21 @@ class AcoesController extends AbstractController
         $offset = $request->query->getInt('offset', 0);
         $order = $request->query->getAlpha('order', 'ASC');
         $paginator = $this->acaoRepository->getAcaoPaginator($offset, $order);
+   
+        $this
+            ->setVariable('acoes', $paginator)
+            ->setVariable('previous', $offset - AcaoRepository::$PAGINATOR_PER_PAGE)
+            ->setVariable('next', min(count($paginator), $offset + AcaoRepository::$PAGINATOR_PER_PAGE))
+            ->setVariable('offset', $offset)
+            ->setVariable('order', $order);
 
-        $variables = $this->defaultVariables();
-        $variables['acoes'] = $paginator;
-        $variables['previous'] = $offset - AcaoRepository::$PAGINATOR_PER_PAGE;
-        $variables['next'] = min(count($paginator), $offset + AcaoRepository::$PAGINATOR_PER_PAGE);
-        $variables['offset'] = $offset;
-        $variables['order'] = $order;
-
-        return $this->render('app/acoes/index.html.twig', $variables);
+        return $this->render('app/acoes/index.html.twig', $this->getVariables());
     }
 
     #[Route('/acoes/novo', name: 'app_acoes_new_index', methods: ['GET'])]
     public function add()
     {
-        $variables = $this->defaultVariables();
-
-        return $this->render('app/acoes/new.html.twig', $variables);
+        return $this->render('app/acoes/new.html.twig', $this->getVariables());
     }
 
     #[Route('/acoes/novo/{id<\d+>?}', name: 'app_acoes_new_create', methods: ['POST'])]
@@ -85,10 +73,9 @@ class AcoesController extends AbstractController
     {
         $acao = $this->acaoRepository->find($id);
 
-        $variables = $this->defaultVariables();
-        $variables['acao'] = $acao;
+        $this->setVariable('acao', $acao);
 
-        return $this->render('app/acoes/new.html.twig', $variables);
+        return $this->render('app/acoes/new.html.twig', $this->getVariables());
     }
 
     #[Route('/acoes/delete/{id}', name: 'app_acoes_delete', methods: ['GET'])]
@@ -107,12 +94,14 @@ class AcoesController extends AbstractController
     }
 
     #[Route('/acoes/load', name: 'app_acoes_load', methods: ['POST'])]
-    public function load(AcaoFactory $acaoFactory, ReaderSpreadsheet $readerSpreadsheet, Request $request): Response
+    public function load(AcaoFactory $acaoFactory, AcaoRejeitadaRepository $acaoRejeitadaRepository, ReaderSpreadsheet $readerSpreadsheet, Request $request): Response
     {
         $dataRequest = $readerSpreadsheet->readSpreadsheet(
             $request->files->all()['file'],
             "{$this->getParameter('kernel.project_dir')}/public/uploads"
         );
+
+        $acaoRejeitadaRepository->flush();
 
         $this->acaoRepository->removeAll();
 
@@ -121,13 +110,13 @@ class AcoesController extends AbstractController
             $this->acaoRepository->add($acao);
         }
 
-        $this->acaoRepository->flush();
+        $this->acaoRepository->flush();        
 
         $this->addFlash(
             'success',
             'Ações da Planilha cadastradas com sucesso!'
         );
 
-        return $this->redirectToRoute('app_acoes_index');
+        return $this->redirectToRoute('app_acoes_index', [], Response::HTTP_CREATED);
     }
 }

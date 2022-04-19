@@ -2,20 +2,20 @@
 
 namespace App\Controller;
 
-use App\Trait\DefaultVariablesControllers;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Controller\BaseController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-class DashController extends AbstractController
+class DashController extends BaseController
 {
-    use DefaultVariablesControllers;
+    public function __construct()
+    {
+        parent::__construct();   
+    }
 
     #[Route('/dash', name: 'app_index')]
     public function index(): Response
     {
-        $variables = $this->defaultVariables();
-
-        return $this->render('app/index.html.twig', $variables);
+        return $this->render('app/index.html.twig', $this->getVariables());
     }
 }

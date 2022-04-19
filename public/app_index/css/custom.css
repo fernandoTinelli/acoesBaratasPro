@@ -689,7 +689,54 @@ footer .copyright {
   Midia Querys - END
 */
 
+/* 
+  List - START
+*/
 
+.list-header {
+  font-weight: 400;
+  font-size: medium;
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.list-content select option::before {
+  content: '- ';
+  font-size: 20px;
+}
+
+.list-center {
+  display: flex;
+  justify-content: center;
+}
+
+@media only screen and (min-width: 768px) {
+  .list-center {
+    align-items: center;
+    border-left: 1px solid #eee;
+    border-right: 1px solid #eee;
+  }
+
+  .list-center a:nth-child(even) {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .list-center {
+    padding-top: 5px;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+  }
+
+  .list-center a:nth-child(odd) {
+    display: none;
+  }
+}
+
+/* 
+  List - END
+*/
 
 
 

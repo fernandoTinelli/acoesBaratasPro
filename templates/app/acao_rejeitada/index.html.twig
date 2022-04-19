@@ -1,0 +1,127 @@
+{% extends 'app/layout.html.twig' %}
+
+{% block page_contents %}
+    <div class="row">
+        {% for label, messages in app.flashes(['success']) %}
+            {# read and display several types of flash messages #}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show ml-3 mr-3 mw-100" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="col-lg-12 col-md-12">
+            <div class="card">
+                <div class="card-header card-header-text">
+                    <h4 class="card-title">Ações Rejeitadas</h4>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <p class="category">Total: {{ acoesRejeitadas|length }}</p>
+                            <p class="category mt-0">Última Atualização: 15th December, 2016</p>
+                        </div>
+
+                        <div class="col-lg-6 col-md-6 col-sm-12 text-right mt-1">
+                            <a href="#" id="save" class="btn btn-primary text-white disabled" onclick="submitForm()">Salvar</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content table-responsive">
+                    <hr>
+                    <form id="frm" action="{{ path('app_acao_rejeitada_update') }}" method="post">
+                        <div class="row">
+                            <div class="col-xl-5 col-md-5 col-sm-12 list">
+                                <h5 class="list-header">Não Rejeitadas:</h5>
+                                <div class="list-content">
+                                    <div class="form-group">
+                                        <select multiple class="form-control" id="not_rejecteds" size="20">
+                                            {% for acao in acoes %}
+                                                <option value="{{ acao.id }}">{{ acao.codigo }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-xl-2 col-md-2 col-sm-12 list-center text-center align-middle">
+                                <a href="#" title="Remover" onclick="delAcao()"><i class="material-icons">arrow_back</i></a>
+                                <a href="#" title="Remover" onclick="delAcao()"><i class="material-icons">arrow_upward</i></a>
+                                &nbsp;
+                                &nbsp;
+                                <a href="#" title="Adicionar" onclick="addAcao()"><i class="material-icons">arrow_forward</i></a>
+                                <a href="#" title="Adicionar" onclick="addAcao()"><i class="material-icons">arrow_downward</i></a>
+                            </div>
+        
+                            <div class="col-xl-5 col-md-5 col-sm-12 list">
+                                <h5 class="list-header">Rejeitadas:</h5>
+                                <div class="list-content">
+                                    <div class="form-group">
+                                        <select multiple class="form-control" id="rejecteds" name="_rejecteds[]" size="20">
+                                            {% for acao in acoesRejeitadas %}
+                                                <option value="{{ acao.id }}">{{ acao.codigo }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        function transferOptions(idSelectFrom, idSelectTo, sortByValue = true)
+        {
+            let optionsToTransfer = [];
+            let selectTo = document.querySelector('#' + idSelectTo);
+
+            document.querySelectorAll('#' + idSelectFrom + ' option:checked').forEach(option => {
+                optionsToTransfer.push(option.cloneNode(true));
+                option.remove();
+            });
+
+            [...selectTo.options].forEach(option => {
+                optionsToTransfer.push(option.cloneNode(true));
+                option.remove();
+            });
+
+            if (sortByValue === true) {
+                optionsToTransfer.sort((v1, v2) => v1.value - v2.value);
+            }
+
+            optionsToTransfer.forEach(option => {
+                selectTo.append(option);
+            });
+        }
+
+        function addAcao()
+        {
+            transferOptions('not_rejecteds', 'rejecteds');
+
+            document.querySelector('#save').classList.remove('disabled');
+        }
+
+        function delAcao()
+        {
+            transferOptions('rejecteds', 'not_rejecteds');
+
+            document.querySelector('#save').classList.remove('disabled');
+        }
+
+        function submitForm()
+        {
+            [...document.querySelector('#rejecteds').options].forEach(option => {
+                option.selected = true;
+            });
+
+            frm.submit();
+        }
+    </script>
+{% endblock javascripts %}

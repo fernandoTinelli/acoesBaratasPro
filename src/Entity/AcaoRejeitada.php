@@ -13,9 +13,6 @@ class AcaoRejeitada
     #[ORM\Column(type: 'integer')]
     private $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
-    private $codigo;
-
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $motivo;
 
@@ -26,18 +23,6 @@ class AcaoRejeitada
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function getCodigo(): ?string
-    {
-        return $this->codigo;
-    }
-
-    public function setCodigo(string $codigo): self
-    {
-        $this->codigo = $codigo;
-
-        return $this;
     }
 
     public function getMotivo(): ?string
