@@ -47,7 +47,7 @@ class AcaoRejeitadaRepository extends ServiceEntityRepository
 
     public function removeAll()
     {
-        $query = $this->_em->getConnection()->prepare('delete from acao');
+        $query = $this->_em->getConnection()->prepare('delete from acao_rejeitada');
         $query->executeQuery();
     }
 

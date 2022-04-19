@@ -43,13 +43,11 @@ class ReaderSpreadsheet implements IReadFilter
                 if ($key === 'A' && is_null($cell->getValue())) {
                     break; // EOF
                 } elseif (!is_null($cell->getValue())) {
-                    if (is_float($cell->getValue())) {
-                        $dataRow[ReaderSpreadsheet::$SPREADSHEET_COLUMNS[$key]] = (float) $cell->getValue();
-                    } elseif ($cell->getValue() !== 'NA') {
-                        $dataRow[ReaderSpreadsheet::$SPREADSHEET_COLUMNS[$key]] = (string) $cell->getValue();
-                    } else {
-                        $dataRow[ReaderSpreadsheet::$SPREADSHEET_COLUMNS[$key]] = 0;
-                    }
+                    $dataRow[ReaderSpreadsheet::$SPREADSHEET_COLUMNS[$key]] = match(true) {
+                        is_float($cell->getValue()) => (float) $cell->getValue(),
+                        $cell->getValue() !== 'NA' => (string) $cell->getValue(),
+                        default => 0
+                    };
                 }
             }
 

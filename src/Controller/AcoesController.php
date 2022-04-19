@@ -25,7 +25,7 @@ class AcoesController extends BaseController
         $offset = ($request->query->getInt('offset', 0) % AcaoRepository::$PAGINATOR_PER_PAGE) !== 0 
             ? 0 
             : $request->query->getInt('offset', 0);
-            
+
         $order = $request->query->getAlpha('order', 'ASC');
         $paginator = $this->acaoRepository->getAcaoPaginator($offset, $order);
    
@@ -105,7 +105,7 @@ class AcoesController extends BaseController
             "{$this->getParameter('kernel.project_dir')}/public/uploads"
         );
 
-        $acaoRejeitadaRepository->flush();
+        $acaoRejeitadaRepository->removeAll();
 
         $this->acaoRepository->removeAll();
 
@@ -114,7 +114,8 @@ class AcoesController extends BaseController
             $this->acaoRepository->add($acao);
         }
 
-        $this->acaoRepository->flush();        
+        $this->acaoRepository->flush(); 
+        $acaoRejeitadaRepository->flush();       
 
         $this->addFlash(
             'success',
