@@ -1,5 +1,5 @@
 # acoesBaratasPro
-Project created with Symfony 6, PHP 8.1 and MySql 5.7 (composer is used as a dependeny manager)
+Project created with Symfony 6, PHP 8.1 and MySql 5.7 (composer is the dependeny manager)
 
 To install all requirements, run the following command:
   - composer update
