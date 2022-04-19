@@ -7,3 +7,5 @@ To install all requirements, run the following command:
 To create de database, use the following commands:
   - php bin\console make:migration
   - php bin\console doctrine:migrations:migrate
+
+*You need to have composer installed
