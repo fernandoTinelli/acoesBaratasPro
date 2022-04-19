@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Main;
 
+use App\Controller\BaseController;
 use App\Entity\Acao;
 use App\Repository\AcaoRepository;
 use App\Trait\DefaultVariablesControllers;

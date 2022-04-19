@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Registration;
 
 use App\Helper\UserFactory;
 use App\Repository\UserRepository;
