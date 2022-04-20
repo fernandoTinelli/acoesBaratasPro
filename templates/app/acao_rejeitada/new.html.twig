@@ -1,0 +1,31 @@
+{% extends "app/layout.html.twig" %}
+
+{% block page_contents %}
+    {# ---Main Content--- #}
+    <div class="row">
+        <div class="col-lg-12 col-md-12">
+            <div class="card">
+                <div class="card-header card-header-text">
+                    <h4>Rejeitar Ação: {{ acao.nome }} ({{ acao.codigo }})</h4>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-xs-12 text-right">
+                            <a href="#salvar" class="btn btn-primary text-white" onclick="frm.submit();">Salvar</a>
+                            <a href="{{ path('app_lista_acoes_baratas_index') }}" class="btn btn-secondary text-white">Voltar</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <form id="frm" action="{{ path('app_acao_rejeitada_create') }}" method="post">
+                        <div class="form-group row">
+                            <label for="motivo" class="col-sm-2 col-form-label">Motivo da Rejeição</label>
+                            <div class="col-sm-10">
+                              <input type="text" class="form-control" id="motivo" name="_motivo">
+                            </div>
+                        </div>
+                        <input type="hidden" name="_id" value="{{ acao.id }}">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock page_contents %}

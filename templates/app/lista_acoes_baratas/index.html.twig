@@ -3,6 +3,17 @@
 {% block page_contents %}
     {# ---Main Content--- #}
     <div class="row">
+        {% for label, messages in app.flashes(['success', 'danger', 'info']) %}
+            {# read and display several types of flash messages #}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show ml-3 mr-3 mw-100" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endfor %}
         <div class="col-lg-12 col-md-12">
             <div class="card">
                 <div class="card-header card-header-text">
@@ -39,14 +50,8 @@
                                     <td>{{ acao.margemEbit|number_format(2, ',', '.') }}%</td>
                                     <td>{{ acao.evEbit|number_format(2, ',', '.') }}</td>
                                     <td>
-                                        <a href="{{ path('app_acoes_alter_index', {id: acao.id}) }}" data-toggle="tooltip" data-placement="left" title="Alterar">
-                                            <i class="material-icons">edit</i>
-                                        </a>
-                                        <a href="{{ path('app_acoes_delete', {id: acao.id}) }}" data-toggle="tooltip" data-placement="left" title="Deletar" >
-                                            <i class="material-icons">delete</i>
-                                        </a>
-                                        <a href="https://www.investsite.com.br/principais_indicadores.php?cod_negociacao={{ acao.codigo }}" target="_blank" data-toggle="tooltip" data-placement="left" title="Mais Detalhes" >
-                                            <i class="material-icons">exit_to_app</i>
+                                        <a href="{{ path('app_acao_rejeitada_create', {id: acao.id}) }}" data-toggle="tooltip" data-placement="left" title="Rejeitar" >
+                                            <i class="material-icons">thumb_down_off_alt</i>
                                         </a>
                                     </td>                                
                                 </tr>

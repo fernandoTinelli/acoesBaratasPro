@@ -19,7 +19,7 @@ class AcaoRejeitadaController extends BaseController
         parent::__construct();
     }
 
-    #[Route('/acoes/rejeitada', name: 'app_acao_rejeitada_index')]
+    #[Route('/acao/rejeitada', name: 'app_acao_rejeitada_index')]
     public function index(): Response
     {
         $acoes = $this->acaoRepository->findAllWithLeftJoin();
@@ -39,7 +39,7 @@ class AcaoRejeitadaController extends BaseController
         return $this->render('/app/acao_rejeitada/index.html.twig', $this->getVariables());
     }
 
-    #[Route('/acoes/reijeitada/update', name:'app_acao_rejeitada_update', methods: ['POST'])]
+    #[Route('/acao/reijeitada/update', name:'app_acao_rejeitada_update', methods: ['POST'])]
     public function update(AcaoRejeitadaFactory $acaoRejeitadaFactory, Request $request): Response
     {
         $idAcoesRejeitadas = $request->request->all()['_rejecteds'] ?? [];
@@ -73,5 +73,31 @@ class AcaoRejeitadaController extends BaseController
         );
 
         return $this->redirectToRoute('app_acao_rejeitada_index', [], Response::HTTP_TEMPORARY_REDIRECT);
+    }
+
+    
+    #[Route('/acao/reijeitada/{id<\d+>?}', name: 'app_acao_rejeitada_create', methods: ['GET', 'POST'])]
+    public function create(?int $id, AcaoRejeitadaFactory $acaoRejeitadaFactory, Request $request): Response
+    {
+        if (!is_null($id)) { // GET
+            $acao = $this->acaoRepository->find($id);
+
+            $this->setVariable('acao', $acao);
+
+            return $this->render('app/acao_rejeitada/new.html.twig', $this->getVariables());
+        }
+
+        // POST
+        $acao = $this->acaoRepository->find($request->request->getInt('_id'));
+        $acao->setAcaoRejeitada($acaoRejeitadaFactory->create($request->request->getAlpha('_motivo')));
+
+        $this->acaoRepository->add($acao);
+
+        $this->addFlash(
+            'success',
+            "{$acao->getCodigo()} adicionada a lista de rejeição"
+        );
+
+        return $this->redirectToRoute('app_lista_acoes_baratas_index');
     }
 }
