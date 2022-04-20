@@ -45,6 +45,9 @@
                                         <a href="{{ path('app_acoes_delete', {id: acao.id}) }}" data-toggle="tooltip" data-placement="left" title="Deletar" >
                                             <i class="material-icons">delete</i>
                                         </a>
+                                        <a href="https://www.investsite.com.br/principais_indicadores.php?cod_negociacao={{ acao.codigo }}" target="_blank" data-toggle="tooltip" data-placement="left" title="Mais Detalhes" >
+                                            <i class="material-icons">exit_to_app</i>
+                                        </a>
                                     </td>                                
                                 </tr>
                             {% endfor %}

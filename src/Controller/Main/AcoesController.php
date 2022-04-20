@@ -98,6 +98,20 @@ class AcoesController extends BaseController
         return $this->redirectToRoute('app_acoes_index', [], Response::HTTP_TEMPORARY_REDIRECT);
     }
 
+    #[Route('/acoes/delete/', name: 'app_acoes_delete_all', methods: ['GET'])]
+    public function deleteAll(AcaoRejeitadaRepository $acaoRejeitadaRepository): Response
+    {
+        $acaoRejeitadaRepository->removeAll();
+        $this->acaoRepository->removeAll();
+
+        $this->addFlash(
+            'info',
+            'Ações removidas com sucesso!'
+        );
+
+        return $this->redirectToRoute('app_acoes_index', [], Response::HTTP_TEMPORARY_REDIRECT);
+    }
+
     #[Route('/acoes/load', name: 'app_acoes_load', methods: ['POST'])]
     public function load(AcaoFactory $acaoFactory, AcaoRejeitadaRepository $acaoRejeitadaRepository, ReaderSpreadsheet $readerSpreadsheet, Request $request): Response
     {
@@ -107,6 +121,7 @@ class AcoesController extends BaseController
         );
 
         $acoes = $this->acaoRepository->findAll();
+        $indexedAcoes = [];
         foreach ($acoes as $acao) {
             $indexedAcoes[$acao->getCodigo()] = $acao;
         }

@@ -77,6 +77,10 @@
 
 {% block javascripts %}
     <script type="text/javascript">
+        $().ready(() => {
+            registerDoubleClickEventListeners();
+        });
+
         function transferOptions(idSelectFrom, idSelectTo, sortByValue = true)
         {
             let optionsToTransfer = [];
@@ -106,6 +110,8 @@
             transferOptions('not_rejecteds', 'rejecteds');
 
             document.querySelector('#save').classList.remove('disabled');
+
+            registerDoubleClickEventListeners();
         }
 
         function delAcao()
@@ -113,6 +119,8 @@
             transferOptions('rejecteds', 'not_rejecteds');
 
             document.querySelector('#save').classList.remove('disabled');
+
+            registerDoubleClickEventListeners();
         }
 
         function submitForm()
@@ -122,6 +130,27 @@
             });
 
             frm.submit();
+        }
+
+        function registerDoubleClickEventListeners()
+        {
+            document.querySelectorAll('#not_rejecteds option').forEach(option => {
+                let newOption = option.cloneNode(true);
+                newOption.addEventListener('dblclick', (event) => {
+                    addAcao();
+                });
+
+                option.parentNode.replaceChild(newOption, option);
+            });
+
+            document.querySelectorAll('#rejecteds option').forEach(option => {
+                let newOption = option.cloneNode(true);
+                newOption.addEventListener('dblclick', (event) => {
+                    delAcao();
+                });
+
+                option.parentNode.replaceChild(newOption, option);
+            });
         }
     </script>
 {% endblock javascripts %}
