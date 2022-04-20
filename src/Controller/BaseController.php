@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 class BaseController extends AbstractController
 {
@@ -11,6 +12,14 @@ class BaseController extends AbstractController
     public function __construct()
     {
         $this->variables = null;
+    }
+
+    final protected function setVariableTitle(string $title): BaseController
+    {
+        $this->variables ??= $this->defaultVariables();
+        $this->variables['title'] = $title;
+        
+        return $this;
     }
 
     final protected function setVariable(string $key, $value): BaseController
@@ -29,9 +38,10 @@ class BaseController extends AbstractController
 		return $this;
 	}
 
-    final protected function getVariables(): array
+    final protected function getVariables(Request $request = null): array
     {
         $this->variables ??= $this->defaultVariables();
+        $this->variables = [...$this->variables, 'path' => $request?->server->get('REQUEST_URI')];
 
         return $this->variables;
     }

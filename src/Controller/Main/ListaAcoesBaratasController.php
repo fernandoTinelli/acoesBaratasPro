@@ -33,6 +33,7 @@ class ListaAcoesBaratasController extends BaseController
             ? 0 
             : $request->query->getInt('offset', 0);
 
+        // $this->setVariableTitle('Lista de Ações Baratas da Bolsa');
         $this->setVariables([
             'acoes' => $acoesAccepteds,
             'acoesShow' => array_slice($acoesAccepteds, $offset, min(count($acoesAccepteds), AcaoRepository::$PAGINATOR_PER_PAGE)),
@@ -41,7 +42,7 @@ class ListaAcoesBaratasController extends BaseController
             'offset' => $offset
         ]);
 
-        return $this->render('app/lista_acoes_baratas/index.html.twig', $this->getVariables());
+        return $this->render('app/lista_acoes_baratas/index.html.twig', $this->getVariables($request));
     }
 
     private function getAcoesAccepteds(array $acoes): array
