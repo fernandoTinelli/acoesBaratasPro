@@ -5,6 +5,7 @@ namespace App\Controller\Main;
 use App\Controller\BaseController;
 use App\Entity\Acao;
 use App\Repository\AcaoRepository;
+use App\Repository\UserRepository;
 use App\Trait\DefaultVariablesControllers;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,11 +24,14 @@ class ListaAcoesBaratasController extends BaseController
     }
 
     #[Route('/lista/acoes/baratas', name: 'app_lista_acoes_baratas_index')]
-    public function index(Request $request): Response
+    public function index(UserRepository $userRepository, Request $request): Response
     {
-        $acoes = $this->acaoRepository->findAllWithLeftJoin();
+        $user = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
         
-        $acoesAccepteds = $this->getAcoesAccepteds($acoes);
+        $acoesAccepteds = $this->getAcoesAccepteds(
+            $this->acaoRepository->findAll(),
+            $user->getAcaoRejeitadas()->toArray()
+        );
 
         $offset = ($request->query->getInt('offset', 0) % AcaoRepository::$PAGINATOR_PER_PAGE) !== 0 
             ? 0 
@@ -45,16 +49,21 @@ class ListaAcoesBaratasController extends BaseController
         return $this->render('app/lista_acoes_baratas/index.html.twig', $this->getVariables($request));
     }
 
-    private function getAcoesAccepteds(array $acoes): array
+    private function getAcoesAccepteds(array $acoes, array $acoesRejeitadas): array
     {
         $acoesAccepteds = array();
+
+        $acoesRejeitadasIndexada = array();
+        foreach ($acoesRejeitadas as $acao) {
+            $acoesRejeitadasIndexada[$acao->getAcao()->getId()] = $acao;
+        }
 
         foreach ($acoes as $acao) {
             if (
                 $acao->getLiquidez() >= ListaAcoesBaratasController::$MIN_LIQUIDEZ_ACCEPTED &&
                 $acao->getMargemEbit() > ListaAcoesBaratasController::$MIN_MARGEM_EBIT_ACCPETED &&
                 !$this->isAcaoNumCodigoRecusada($acao->getCodigo()) &&
-                !$this->isAcaoRecusada($acao)
+                !$this->isAcaoRecusada($acao, $acoesRejeitadasIndexada)
             ) {
                 $codigo = substr($acao->getCodigo(), 0, 3); // Get only the alpha characteres
                 if (
@@ -73,9 +82,9 @@ class ListaAcoesBaratasController extends BaseController
         return $acoesAccepteds;
     }
 
-    private function isAcaoRecusada(Acao $acao): bool
+    private function isAcaoRecusada(Acao $acao, array $acoesRejeitadas): bool
     {
-        return !is_null($acao->getAcaoRejeitada());
+        return array_key_exists($acao->getId(), $acoesRejeitadas);
     }
 
     private function isAcaoNumCodigoRecusada(string $codigo): bool

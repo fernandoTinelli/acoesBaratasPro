@@ -6,6 +6,7 @@ use App\Controller\BaseController;
 use App\Helper\AcaoRejeitadaFactory;
 use App\Repository\AcaoRejeitadaRepository;
 use App\Repository\AcaoRepository;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -14,7 +15,8 @@ class AcaoRejeitadaController extends BaseController
 {
     public function __construct(
         private AcaoRejeitadaRepository $acaoRejeitadaRepository,
-        private AcaoRepository $acaoRepository
+        private AcaoRepository $acaoRepository,
+        private UserRepository $userRepository
     ) {
         parent::__construct();
     }
@@ -22,11 +24,18 @@ class AcaoRejeitadaController extends BaseController
     #[Route('/acao/rejeitada', name: 'app_acao_rejeitada_index')]
     public function index(): Response
     {
-        $acoes = $this->acaoRepository->findAllWithLeftJoin();
+        $user = $this->userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
+
+        $acoesRejeitadas = $user->getAcaoRejeitadas()->toArray();
+        $acoesRejeitadasIndexada = array();
+        foreach ($acoesRejeitadas as $acao) {
+            $acoesRejeitadasIndexada[$acao->getId()] = $acao;
+        }
+
+        $acoes = $this->acaoRepository->findAll();
 
         foreach ($acoes as $key => $acao) {
-            if (!is_null($acao->getAcaoRejeitada())) {
-                $acoesRejeitadas[] = $acao;
+            if (array_key_exists($acao->getId(), $acoesRejeitadasIndexada)) {
                 unset($acoes[$key]);
             }
         }
@@ -43,29 +52,32 @@ class AcaoRejeitadaController extends BaseController
     public function update(AcaoRejeitadaFactory $acaoRejeitadaFactory, Request $request): Response
     {
         $idAcoesRejeitadas = $request->request->all()['_rejecteds'] ?? [];
-        $idAcoesRejeitadas = array_flip($idAcoesRejeitadas); // array indexed by id
 
-        $acoes = $this->acaoRepository->findAllWithLeftJoin();
-
-        foreach ($acoes as $acao) {
-            if (
-                !is_null($acao->getAcaoRejeitada()) && 
-                !array_key_exists($acao->getId(), $idAcoesRejeitadas)
-            ) {
-                $this->acaoRejeitadaRepository->remove($acao->getAcaoRejeitada(), false);
-                $acao->setAcaoRejeitada(null);
-                $this->acaoRepository->add($acao);
-            } elseif (
-                is_null($acao->getAcaoRejeitada()) &&
-                array_key_exists($acao->getId(), $idAcoesRejeitadas)
-            ) {
-                $acao->setAcaoRejeitada($acaoRejeitadaFactory->create());
-                $this->acaoRepository->add($acao);
-            }  
+        $user = $this->userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
+        
+        $acoesRejeitadas = $user->getAcaoRejeitadas()->toArray();
+        $acoesRejeitadasIndexada = array();
+        foreach ($acoesRejeitadas as $acao) {
+            $acoesRejeitadasIndexada[$acao->getId()] = $acao;
         }
 
-        $this->acaoRepository->flush();
-        $this->acaoRejeitadaRepository->flush();
+        foreach ($idAcoesRejeitadas as $id) {
+            if (!array_key_exists($id, $acoesRejeitadasIndexada)) {
+                // Criar nova ação rejeitada
+                $acaoRejeitada = $acaoRejeitadaFactory->create($user, $this->acaoRepository->find($id), '');
+                $this->acaoRejeitadaRepository->add($acaoRejeitada, false);
+            } else {
+                // Retira da lista. O que sobrar, não será mais rejeitada
+                unset($acaoRejeitadaRepository[$id]);
+            }
+        }
+
+        // Remover do banco o que sobrou na lista de acoesRejeitadasIndexada
+        foreach ($acoesRejeitadasIndexada as $acaoRejeitada) {
+            $this->acaoRejeitadaRepository->remove($acaoRejeitada, false);
+        }
+
+        $this->acaoRejeitadaRepository->flush();       
 
         $this->addFlash(
             'success',
@@ -88,10 +100,11 @@ class AcaoRejeitadaController extends BaseController
         }
 
         // POST
+        $user = $this->userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
         $acao = $this->acaoRepository->find($request->request->getInt('_id'));
-        $acao->setAcaoRejeitada($acaoRejeitadaFactory->create($request->request->getAlpha('_motivo')));
+        $acaoRejeitada = $acaoRejeitadaFactory->create($user, $acao, $request->request->getAlpha('_motivo'));
 
-        $this->acaoRepository->add($acao);
+        $this->acaoRejeitadaRepository->add($acaoRejeitada);
 
         $this->addFlash(
             'success',

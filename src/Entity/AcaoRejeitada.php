@@ -16,7 +16,11 @@ class AcaoRejeitada
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $motivo;
 
-    #[ORM\OneToOne(inversedBy: 'acaoRejeitada', targetEntity: Acao::class, cascade: ['persist', 'remove'])]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'acaoRejeitadas')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $user;
+
+    #[ORM\ManyToOne(targetEntity: Acao::class, inversedBy: 'acaoRejeitadas')]
     #[ORM\JoinColumn(nullable: false)]
     private $acao;
 
@@ -37,12 +41,24 @@ class AcaoRejeitada
         return $this;
     }
 
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
     public function getAcao(): ?Acao
     {
         return $this->acao;
     }
 
-    public function setAcao(Acao $acao): self
+    public function setAcao(?Acao $acao): self
     {
         $this->acao = $acao;
 

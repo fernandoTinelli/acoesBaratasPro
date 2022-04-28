@@ -53,6 +53,9 @@
                                         <a href="{{ path('app_acao_rejeitada_create', {id: acao.id}) }}" data-toggle="tooltip" data-placement="left" title="Rejeitar" >
                                             <i class="material-icons">thumb_down_off_alt</i>
                                         </a>
+                                        <a href="https://www.investsite.com.br/principais_indicadores.php?cod_negociacao={{ acao.codigo }}" target="_blank" data-toggle="tooltip" data-placement="left" title="Mais detalhes" >
+                                            <i class="material-icons">article</i>
+                                        </a>
                                     </td>                                
                                 </tr>
                             {% endfor %}

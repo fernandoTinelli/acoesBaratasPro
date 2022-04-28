@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -26,6 +28,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 255)]
     private $name;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: AcaoRejeitada::class, orphanRemoval: true)]
+    private $acaoRejeitadas;
+
+    public function __construct()
+    {
+        $this->acaoRejeitadas = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -108,6 +118,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AcaoRejeitada>
+     */
+    public function getAcaoRejeitadas(): Collection
+    {
+        return $this->acaoRejeitadas;
+    }
+
+    public function addAcaoRejeitada(AcaoRejeitada $acaoRejeitada): self
+    {
+        if (!$this->acaoRejeitadas->contains($acaoRejeitada)) {
+            $this->acaoRejeitadas[] = $acaoRejeitada;
+            $acaoRejeitada->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAcaoRejeitada(AcaoRejeitada $acaoRejeitada): self
+    {
+        if ($this->acaoRejeitadas->removeElement($acaoRejeitada)) {
+            // set the owning side to null (unless already changed)
+            if ($acaoRejeitada->getUser() === $this) {
+                $acaoRejeitada->setUser(null);
+            }
+        }
 
         return $this;
     }

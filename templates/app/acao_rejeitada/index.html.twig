@@ -60,8 +60,8 @@
                                 <div class="list-content">
                                     <div class="form-group">
                                         <select multiple class="form-control" id="rejecteds" name="_rejecteds[]" size="20">
-                                            {% for acao in acoesRejeitadas %}
-                                                <option value="{{ acao.id }}" title="Motivo: {{ acao.acaoRejeitada.motivo|default('-') }}">{{ acao.codigo }}</option>
+                                            {% for acaoRejeitada in acoesRejeitadas %}
+                                                <option value="{{ acaoRejeitada.acao.id }}" title="Motivo: {{ acaoRejeitada.motivo|default('-') }}">{{ acaoRejeitada.acao.codigo }}</option>
                                             {% endfor %}
                                         </select>
                                     </div>

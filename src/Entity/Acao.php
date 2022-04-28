@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AcaoRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AcaoRepository::class)]
@@ -31,8 +33,13 @@ class Acao
     #[ORM\Column(type: 'float')]
     private $ev_ebit;
 
-    #[ORM\OneToOne(mappedBy: 'acao', targetEntity: AcaoRejeitada::class, cascade: ['persist', 'remove'])]
-    private $acaoRejeitada;
+    #[ORM\OneToMany(mappedBy: 'acao', targetEntity: AcaoRejeitada::class, orphanRemoval: true)]
+    private $acaoRejeitadas;
+
+    public function __construct()
+    {
+        $this->acaoRejeitadas = new ArrayCollection();
+    }
 
     private function setId(int $id): self
     {
@@ -118,19 +125,32 @@ class Acao
         return $this;
     }
 
-    public function getAcaoRejeitada(): ?AcaoRejeitada
+    /**
+     * @return Collection<int, AcaoRejeitada>
+     */
+    public function getAcaoRejeitadas(): Collection
     {
-        return $this->acaoRejeitada;
+        return $this->acaoRejeitadas;
     }
 
-    public function setAcaoRejeitada(?AcaoRejeitada $acaoRejeitada): self
+    public function addAcaoRejeitada(AcaoRejeitada $acaoRejeitada): self
     {
-        // set the owning side of the relation if necessary
-        if ($acaoRejeitada?->getAcao() !== $this) {
-            $acaoRejeitada?->setAcao($this);
+        if (!$this->acaoRejeitadas->contains($acaoRejeitada)) {
+            $this->acaoRejeitadas[] = $acaoRejeitada;
+            $acaoRejeitada->setAcao($this);
         }
 
-        $this->acaoRejeitada = $acaoRejeitada;
+        return $this;
+    }
+
+    public function removeAcaoRejeitada(AcaoRejeitada $acaoRejeitada): self
+    {
+        if ($this->acaoRejeitadas->removeElement($acaoRejeitada)) {
+            // set the owning side to null (unless already changed)
+            if ($acaoRejeitada->getAcao() === $this) {
+                $acaoRejeitada->setAcao(null);
+            }
+        }
 
         return $this;
     }
