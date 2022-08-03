@@ -23,7 +23,7 @@ class ListaAcoesBaratasController extends BaseController
         parent::__construct();
     }
 
-    #[Route('/lista/acoes/baratas', name: 'app_lista_acoes_baratas_index')]
+    #[Route('/acoes/baratas', name: 'app_lista_acoes_baratas_index')]
     public function index(UserRepository $userRepository, Request $request): Response
     {
         $user = $userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
@@ -54,8 +54,8 @@ class ListaAcoesBaratasController extends BaseController
         $acoesAccepteds = array();
 
         $acoesRejeitadasIndexada = array();
-        foreach ($acoesRejeitadas as $acao) {
-            $acoesRejeitadasIndexada[$acao->getAcao()->getId()] = $acao;
+        foreach ($acoesRejeitadas as $acaoRejeitada) {
+            $acoesRejeitadasIndexada[$acaoRejeitada->getAcao()->getId()] = $acaoRejeitada;
         }
 
         foreach ($acoes as $acao) {

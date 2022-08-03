@@ -43,8 +43,9 @@ security:
         - { path: ^/dash, roles: [ROLE_USER, ROLE_ADMIN] }
 
         #only USER
-        - { path: ^/lista/acoes/baratas, roles: ROLE_USER }
-        - { path: ^/acao/rejeitada, roles: ROLE_USER }
+        - { path: ^/acoes/baratas, roles: ROLE_USER }
+        - { path: ^/acoes/rejeitadas, roles: ROLE_USER }
+        - { path: ^/carteira, roles: ROLE_USER }
 
         #only ADMIN
         - { path: ^/acoes, roles: ROLE_ADMIN }
