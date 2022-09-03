@@ -48,7 +48,7 @@ class AcaoRejeitadaController extends BaseController
         return $this->render('/app/acao_rejeitada/index.html.twig', $this->getVariables());
     }
 
-    #[Route('/acoes/reijeitadas/update', name:'app_acao_rejeitada_update', methods: ['POST'])]
+    #[Route('/acoes/rejeitadas/update', name:'app_acao_rejeitada_update', methods: ['POST'])]
     public function update(AcaoRejeitadaFactory $acaoRejeitadaFactory, Request $request): Response
     {
         $idAcoesRejeitadas = $request->request->all()['_rejecteds'] ?? [];
@@ -68,7 +68,7 @@ class AcaoRejeitadaController extends BaseController
                 $this->acaoRejeitadaRepository->add($acaoRejeitada, false);
             } else {
                 // Retira da lista. O que sobrar, não será mais rejeitada
-                unset($acaoRejeitadaRepository[$id]);
+                unset($acoesRejeitadasIndexada[$id]);
             }
         }
 
@@ -88,7 +88,7 @@ class AcaoRejeitadaController extends BaseController
     }
 
     
-    #[Route('/acoes/reijeitadas/{id<\d+>?}', name: 'app_acao_rejeitada_create', methods: ['GET', 'POST'])]
+    #[Route('/acoes/rejeitadas/{id<\d+>?}', name: 'app_acao_rejeitada_create', methods: ['GET', 'POST'])]
     public function create(?int $id, AcaoRejeitadaFactory $acaoRejeitadaFactory, Request $request): Response
     {
         if (!is_null($id)) { // GET
