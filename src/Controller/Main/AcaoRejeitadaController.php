@@ -3,7 +3,8 @@
 namespace App\Controller\Main;
 
 use App\Controller\BaseController;
-use App\Helper\AcaoRejeitadaFactory;
+use App\Factory\AcaoRejeitadaFactory;
+use App\Helper\ArrayUtils;
 use App\Repository\AcaoRejeitadaRepository;
 use App\Repository\AcaoRepository;
 use App\Repository\UserRepository;
@@ -27,10 +28,7 @@ class AcaoRejeitadaController extends BaseController
         $user = $this->userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
 
         $acoesRejeitadas = $user->getAcaoRejeitadas()->toArray();
-        $acoesRejeitadasIndexada = array();
-        foreach ($acoesRejeitadas as $acao) {
-            $acoesRejeitadasIndexada[$acao->getId()] = $acao;
-        }
+        $acoesRejeitadasIndexada = ArrayUtils::indexArray($acoesRejeitadas, "id");
 
         $acoes = $this->acaoRepository->findAll();
 
@@ -56,10 +54,7 @@ class AcaoRejeitadaController extends BaseController
         $user = $this->userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
         
         $acoesRejeitadas = $user->getAcaoRejeitadas()->toArray();
-        $acoesRejeitadasIndexada = array();
-        foreach ($acoesRejeitadas as $acao) {
-            $acoesRejeitadasIndexada[$acao->getId()] = $acao;
-        }
+        $acoesRejeitadasIndexada = ArrayUtils::indexArray($acoesRejeitadas, "id");
 
         foreach ($idAcoesRejeitadas as $id) {
             if (!array_key_exists($id, $acoesRejeitadasIndexada)) {

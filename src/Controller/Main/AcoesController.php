@@ -3,7 +3,7 @@
 namespace App\Controller\Main;
 
 use App\Controller\BaseController;
-use App\Helper\AcaoFactory;
+use App\Factory\AcaoFactory;
 use App\Helper\ReaderSpreadsheet;
 use App\Repository\AcaoRejeitadaRepository;
 use App\Repository\AcaoRepository;

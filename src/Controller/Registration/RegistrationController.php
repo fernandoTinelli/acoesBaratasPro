@@ -2,7 +2,7 @@
 
 namespace App\Controller\Registration;
 
-use App\Helper\UserFactory;
+use App\Factory\UserFactory;
 use App\Repository\UserRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\{

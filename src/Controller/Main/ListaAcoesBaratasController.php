@@ -6,8 +6,6 @@ use App\Controller\BaseController;
 use App\Entity\Acao;
 use App\Repository\AcaoRepository;
 use App\Repository\UserRepository;
-use App\Trait\DefaultVariablesControllers;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
