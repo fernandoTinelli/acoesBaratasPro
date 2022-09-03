@@ -4,6 +4,7 @@ namespace App\Controller\Main;
 
 use App\Controller\BaseController;
 use App\Factory\AcaoFactory;
+use App\Helper\ArrayUtils;
 use App\Helper\ReaderSpreadsheet;
 use App\Repository\AcaoRejeitadaRepository;
 use App\Repository\AcaoRepository;
@@ -113,7 +114,7 @@ class AcoesController extends BaseController
     }
 
     #[Route('/acoes/load', name: 'app_acoes_load', methods: ['POST'])]
-    public function load(AcaoFactory $acaoFactory, AcaoRejeitadaRepository $acaoRejeitadaRepository, ReaderSpreadsheet $readerSpreadsheet, Request $request): Response
+    public function load(AcaoFactory $acaoFactory, ReaderSpreadsheet $readerSpreadsheet, Request $request): Response
     {
         $dataRequest = $readerSpreadsheet->readSpreadsheet(
             $request->files->all()['file'],
@@ -121,10 +122,7 @@ class AcoesController extends BaseController
         );
 
         $acoes = $this->acaoRepository->findAll();
-        $indexedAcoes = [];
-        foreach ($acoes as $acao) {
-            $indexedAcoes[$acao->getCodigo()] = $acao;
-        }
+        $indexedAcoes = ArrayUtils::indexArray($acoes, "codigo");
 
         $arrayAcoes = $acaoFactory->createMany($dataRequest);
         foreach ($arrayAcoes as $acao) {
