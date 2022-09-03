@@ -21,7 +21,7 @@ class AcaoRejeitadaController extends BaseController
         parent::__construct();
     }
 
-    #[Route('/acoes/rejeitadas', name: 'app_acao_rejeitada_index')]
+    #[Route('/acoes/rejeitadas', name: 'app_acao_rejeitada_index', methods: ['GET'])]
     public function index(): Response
     {
         $user = $this->userRepository->findOneBy(['email' => $this->getUser()->getUserIdentifier()]);
@@ -91,7 +91,7 @@ class AcaoRejeitadaController extends BaseController
     #[Route('/acoes/rejeitadas/{id<\d+>?}', name: 'app_acao_rejeitada_create', methods: ['GET', 'POST'])]
     public function create(?int $id, AcaoRejeitadaFactory $acaoRejeitadaFactory, Request $request): Response
     {
-        if (!is_null($id)) { // GET
+        if ($request->getMethod() == Request::METHOD_GET) {
             $acao = $this->acaoRepository->find($id);
 
             $this->setVariable('acao', $acao);
