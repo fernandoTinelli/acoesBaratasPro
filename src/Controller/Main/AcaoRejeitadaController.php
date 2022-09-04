@@ -82,7 +82,6 @@ class AcaoRejeitadaController extends BaseController
         return $this->redirectToRoute('app_acao_rejeitada_index', [], Response::HTTP_TEMPORARY_REDIRECT);
     }
 
-    
     #[Route('/acoes/rejeitadas/{id<\d+>?}', name: 'app_acao_rejeitada_create', methods: ['GET', 'POST'])]
     public function create(?int $id, AcaoRejeitadaFactory $acaoRejeitadaFactory, Request $request): Response
     {

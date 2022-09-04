@@ -36,9 +36,13 @@ class Acao
     #[ORM\OneToMany(mappedBy: 'acao', targetEntity: AcaoRejeitada::class, orphanRemoval: true)]
     private $acaoRejeitadas;
 
+    #[ORM\OneToMany(mappedBy: 'acao', targetEntity: Transacao::class, orphanRemoval: true)]
+    private Collection $transacaos;
+
     public function __construct()
     {
         $this->acaoRejeitadas = new ArrayCollection();
+        $this->transacaos = new ArrayCollection();
     }
 
     private function setId(int $id): self
@@ -149,6 +153,36 @@ class Acao
             // set the owning side to null (unless already changed)
             if ($acaoRejeitada->getAcao() === $this) {
                 $acaoRejeitada->setAcao(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transacao>
+     */
+    public function getTransacaos(): Collection
+    {
+        return $this->transacaos;
+    }
+
+    public function addTransacao(Transacao $transacao): self
+    {
+        if (!$this->transacaos->contains($transacao)) {
+            $this->transacaos->add($transacao);
+            $transacao->setAcao($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransacao(Transacao $transacao): self
+    {
+        if ($this->transacaos->removeElement($transacao)) {
+            // set the owning side to null (unless already changed)
+            if ($transacao->getAcao() === $this) {
+                $transacao->setAcao(null);
             }
         }
 

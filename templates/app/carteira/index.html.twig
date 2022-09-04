@@ -1,20 +1,129 @@
-{% extends 'base.html.twig' %}
+{% extends 'app/layout.html.twig' %}
 
-{% block title %}Hello CarteiraController!{% endblock %}
+{% block page_contents %}
+    {# ---Main Content--- #}
+    <div class="row">
+        {% for label, messages in app.flashes(['success', 'danger', 'info']) %}
+            {# read and display several types of flash messages #}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show ml-3 mr-3 mw-100" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endfor %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+        <div class="offset-lg-10 col-lg-2 offset-md-10 col-md-2">
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#adicionarTransacaoModal">
+                Adicionar Transação
+            </button>
+        </div>
+        
+        <div class="col-lg-12 col-md-12">
+            <div class="card">
+                <div class="card-header card-header-text">
+                    <h4 class="card-title">Suas Ações</h4>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <p class="category">Total de Ativos: {{ acoes|length }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-content table-responsive">
+                    <table class="table table-hover">
+                        <thead class="text-primary">
+                            <tr>
+                                <th><input type="checkbox" name="" id="" class="checkbox"></th>
+                                {# {% if order == 'ASC' %} #}
+                                    <th>Código <a id="orderBy" href="{{ path('app_acoes_index', {offset: offset|default(0), order: 'DESC'})}}"><i class="material-icons">arrow_drop_up</i></a></th>    
+                                {# {% else %} #}
+                                    {# <th>Código <a id="orderBy" href="{{ path('app_acoes_index', {offset: offset|default(0), order: 'ASC'})}}"><i class="material-icons">arrow_drop_down</i></a></th> #}
+                                {# {% endif %} #}
+                                <th>Nome</th>
+                                <th>Quantidade</th>
+                                <th>Preço Médio</th>
+                                <th>Preço Atual</th>
+                                <th>Situação</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for acao in acoes %}
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" id="chk_" class="checkbox" value="">
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        <a href="{{ path('app_acoes_alter_index', {id: acao.id}) }}" data-toggle="tooltip" data-placement="left" title="Alterar">
+                                            <i class="material-icons">edit</i>
+                                        </a>
+                                        <a href="{{ path('app_acoes_delete', {id: acao.id}) }}" data-toggle="tooltip" data-placement="left" title="Deletar" >
+                                            <i class="material-icons">delete</i>
+                                        </a>
+                                    </td>                                
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/pog/Documentos/Projetos/acoesBaratasPro/src/Controller/CarteiraController.php'|file_link(0) }}">src/Controller/CarteiraController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/pog/Documentos/Projetos/acoesBaratasPro/templates/carteira/index.html.twig'|file_link(0) }}">templates/carteira/index.html.twig</a></code></li>
-    </ul>
-</div>
+    <!-- adicionarTransacaoModal -->
+    <div class="modal fade" id="adicionarTransacaoModal" tabindex="-1" role="dialog" aria-labelledby="adicionarTransacaoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adicionarTransacaoModalLabel">Adicionar Transação</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="frm" action="{{ path('app_cateira_transacao_create') }}" method="POST">
+                        <div class="form-group">
+                            <label for="acao">Ação</label>
+                            <select name="_acao" id="acao" class="form-control" required>
+                                {% for acao in acoesCadastradas %}
+                                    <option value="{{ acao.id }}">{{ acao.codigo }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="data">Data</label>
+                            <input type="date" class="form-control" id="data" name="_data" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="quantidade">Quantidade</label>
+                            <input type="number" class="form-control" id="quantidade" name="_quantidade" placeholder="Quantidade" min="1" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="valor">Valor (R$)</label>
+                            <input type="number" class="form-control" id="valor" name="_valor" placeholder="Valor Pago" step="any" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary" onclick="frm.submit()">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+       
+    </script>
+{% endblock javascripts %}

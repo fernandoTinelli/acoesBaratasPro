@@ -32,9 +32,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: AcaoRejeitada::class, orphanRemoval: true)]
     private $acaoRejeitadas;
 
+    #[ORM\OneToMany(mappedBy: 'usuario', targetEntity: Transacao::class)]
+    private Collection $transacaos;
+
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Carteira $carteira = null;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Carteira::class, orphanRemoval: true)]
+    private Collection $carteiras;
+
     public function __construct()
     {
         $this->acaoRejeitadas = new ArrayCollection();
+        $this->transacaos = new ArrayCollection();
+        $this->carteiras = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -146,6 +157,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($acaoRejeitada->getUser() === $this) {
                 $acaoRejeitada->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Transacao>
+     */
+    public function getTransacaos(): Collection
+    {
+        return $this->transacaos;
+    }
+
+    public function addTransacao(Transacao $transacao): self
+    {
+        if (!$this->transacaos->contains($transacao)) {
+            $this->transacaos->add($transacao);
+            $transacao->setUsuario($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTransacao(Transacao $transacao): self
+    {
+        if ($this->transacaos->removeElement($transacao)) {
+            // set the owning side to null (unless already changed)
+            if ($transacao->getUsuario() === $this) {
+                $transacao->setUsuario(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Carteira>
+     */
+    public function getCarteiras(): Collection
+    {
+        return $this->carteiras;
+    }
+
+    public function addCarteira(Carteira $carteira): self
+    {
+        if (!$this->carteiras->contains($carteira)) {
+            $this->carteiras->add($carteira);
+            $carteira->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCarteira(Carteira $carteira): self
+    {
+        if ($this->carteiras->removeElement($carteira)) {
+            // set the owning side to null (unless already changed)
+            if ($carteira->getUser() === $this) {
+                $carteira->setUser(null);
             }
         }
 
