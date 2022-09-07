@@ -93,7 +93,7 @@
                     <form id="frm" action="{{ path('app_cateira_transacao_create') }}" method="POST">
                         <div class="form-group">
                             <label for="acao">Ação</label>
-                            <select name="_acao" id="acao" class="form-control" required>
+                            <select name="_acao" id="acao" class="form-control" required="true">
                                 {% for acao in acoesCadastradas %}
                                     <option value="{{ acao.id }}">{{ acao.codigo }}</option>
                                 {% endfor %}
@@ -101,15 +101,23 @@
                         </div>
                         <div class="form-group">
                             <label for="data">Data</label>
-                            <input type="date" class="form-control" id="data" name="_data" required>
+                            <input type="date" class="form-control" id="data" name="_data" required="true">
+                        </div>
+                        <div class="form-group">
+                            <label for="tipo">Tipo</label>
+                            <select name="_tipo" id="tipo" class="form-control" required="true">
+                                {% for tipo in tipos %}
+                                    <option value="{{ tipo.id }}">{{ tipo.nome|capitalize }}</option>
+                                {% endfor %}
+                            </select>
                         </div>
                         <div class="form-group">
                             <label for="quantidade">Quantidade</label>
-                            <input type="number" class="form-control" id="quantidade" name="_quantidade" placeholder="Quantidade" min="1" required>
+                            <input type="number" class="form-control" id="quantidade" name="_quantidade" placeholder="Quantidade" min="1" required="true">
                         </div>
                         <div class="form-group">
                             <label for="valor">Valor (R$)</label>
-                            <input type="number" class="form-control" id="valor" name="_valor" placeholder="Valor Pago" step="any" required>
+                            <input type="number" class="form-control" id="valor" name="_valor" placeholder="Valor Pago" step="any" required="true">
                         </div>
                     </form>
                 </div>
