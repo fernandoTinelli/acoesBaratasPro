@@ -56,12 +56,16 @@
                                     <td>
                                         <input type="checkbox" id="chk_" class="checkbox" value="">
                                     </td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>{{ acao.acao.codigo }}</td>
+                                    <td>{{ acao.acao.nome }}</td>
+                                    <td>{{ acao.quantidade }}</td>
+                                    <td>R$ {{ acao.precoMedio }}</td>
+                                    <td>R$ {{ acoesCadastradasIndexada[acao.acao.id].preco }}</td>
+                                    {% if acao.precoMedio < acoesCadastradasIndexada[acao.acao.id].preco %}
+                                        <td>- R$ {{ acoesCadastradasIndexada[acao.acao.id].preco - acao.precoMedio }}</td>    
+                                    {% else %}
+                                        <td>R$ {{ acao.precoMedio - acoesCadastradasIndexada[acao.acao.id].preco }}</td>    
+                                    {% endif %}
                                     <td>
                                         <a href="{{ path('app_acoes_alter_index', {id: acao.id}) }}" data-toggle="tooltip" data-placement="left" title="Alterar">
                                             <i class="material-icons">edit</i>

@@ -8,6 +8,9 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: TipoTransacaoRepository::class)]
 class TipoTransacao
 {
+    public static string $COMPRA = "1";
+    public static string $VENDA = "2";
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
