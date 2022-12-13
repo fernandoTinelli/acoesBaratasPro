@@ -15,70 +15,42 @@
             {% endfor %}
         {% endfor %}
 
-        <div class="offset-lg-10 col-lg-2 offset-md-10 col-md-2">
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#adicionarTransacaoModal">
-                Adicionar Transação
-            </button>
-        </div>
+        <button id="btnModal" type="button" style="display:none;" class="btn btn-primary" data-toggle="modal" data-target="#adicionarTransacaoModal">
+            Adicionar Transação
+        </button>
         
         <div class="col-lg-12 col-md-12">
             <div class="card">
                 <div class="card-header card-header-text">
-                    <h4 class="card-title">Suas Ações</h4>
-                    <div class="row">
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <p class="category">Total de Ativos: {{ acoes|length }}</p>
-                        </div>
-                    </div>
+                    <h4 class="card-title">Transações de "{{ acao['nome'] }} ({{ acao['codigo'] }})"</h4>
                 </div>
                 <div class="card-content table-responsive">
                     <table class="table table-hover">
                         <thead class="text-primary">
                             <tr>
                                 <th><input type="checkbox" name="" id="" class="checkbox"></th>
-                                {# {% if order == 'ASC' %} #}
-                                    <th>Código <a id="orderBy" href="{{ path('app_acoes_index', {offset: offset|default(0), order: 'DESC'})}}"><i class="material-icons">arrow_drop_up</i></a></th>    
-                                {# {% else %} #}
-                                    {# <th>Código <a id="orderBy" href="{{ path('app_acoes_index', {offset: offset|default(0), order: 'ASC'})}}"><i class="material-icons">arrow_drop_down</i></a></th> #}
-                                {# {% endif %} #}
-                                <th>Nome</th>
                                 <th>Quantidade</th>
-                                <th>Preço Médio</th>
-                                <th>Preço Atual</th>
-                                <th>Situação</th>
+                                <th>Data</th>
+                                <th>Tipo</th>
+                                <th>Preço</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for acao in acoes %}
-                                <tr>
+                            {% for transacao in transacoes %}
+                                <tr id="transacao{{ transacao.id }}">
                                     <td>
                                         <input type="checkbox" id="chk_" class="checkbox" value="">
                                     </td>
-                                    <td>{{ acao.acao.codigo }}</td>
-                                    <td>{{ acao.acao.nome }}</td>
-                                    <td>{{ acao.quantidade }}</td>
-                                    <td>R$ {{ acao.precoMedio|number_format(2) }}</td>
-                                    <td>R$ {{ acoesCadastradasIndexada[acao.acao.id].preco|number_format(2) }}</td>
-                                    {% if acao.precoMedio < acoesCadastradasIndexada[acao.acao.id].preco %}
-                                        <td style="color: green;">
-                                            R$ {{ (acoesCadastradasIndexada[acao.acao.id].preco - acao.precoMedio)|number_format(2) }}
-                                        </td>
-                                    {% elseif (acao.precoMedio > acoesCadastradasIndexada[acao.acao.id].preco) %}
-                                        <td style="color: red;">
-                                            R$ {{ (acoesCadastradasIndexada[acao.acao.id].preco - acao.precoMedio)|number_format(2) }}
-                                        </td>
-                                    {% else %}
-                                        <td>
-                                            R$ 0.00
-                                        </td>
-                                    {% endif %}
+                                    <td>{{ transacao.quantidade }}</td>
+                                    <td>{{ transacao.data | date("d/m/Y") }}</td>
+                                    <td value="{{ transacao.tipo.id }}">{{ transacao.tipo.nome }}</td>
+                                    <td>R$ {{ transacao.valor | number_format(2) }}</td>
                                     <td>
-                                        <a href="{{ path('app_transacoes_index', {id: acao.id}) }}" data-toggle="tooltip" data-placement="left" title="Alterar">
+                                        <a href="#" data-toggle="tooltip" data-placement="left" title="Alterar" onclick="alterarTransacao({{ transacao.id }})">
                                             <i class="material-icons">edit</i>
                                         </a>
-                                        <a href="{{ path('app_cateira_transacao_delete', {id: acao.acao.id}) }}" data-toggle="tooltip" data-placement="left" title="Deletar" >
+                                        <a href="#" data-toggle="tooltip" data-placement="left" title="Deletar" >
                                             <i class="material-icons">delete</i>
                                         </a>
                                     </td>                                
@@ -105,10 +77,8 @@
                     <form id="frm" action="{{ path('app_cateira_transacao_create') }}" method="POST">
                         <div class="form-group">
                             <label for="acao">Ação</label>
-                            <select name="_acao" id="acao" class="form-control" required="true">
-                                {% for acao in acoesCadastradas %}
-                                    <option value="{{ acao.id }}">{{ acao.codigo }}</option>
-                                {% endfor %}
+                            <select name="_acao" id="acao" class="form-control" required="true" disabled>
+                                <option value="{{ acao['id'] }}">{{ acao['codigo'] }}</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -144,6 +114,20 @@
 
 {% block javascripts %}
     <script type="text/javascript">
-       document.getElementById('data').valueAsDate = new Date();
+        function alterarTransacao(id) {
+            document.querySelector('#btnModal').click();
+
+            let transacao = document.querySelector('#transacao' + id); 
+
+            let quantidade = transacao.children[1].innerText;
+            let data = transacao.children[2].innerText;
+            let tipo = transacao.children[3].attributes['value'].value;
+            let valor = transacao.children[4].innerText;
+
+            document.querySelector('#data').valueAsDate = new Date(data);            
+            document.querySelector('#tipo').value = tipo;
+            document.querySelector('#quantidade').value = quantidade;
+            document.querySelector('#valor').value = parseFloat(valor.replace('R$', '').trim());
+        }
     </script>
 {% endblock javascripts %}

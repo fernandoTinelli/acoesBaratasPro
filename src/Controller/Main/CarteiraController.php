@@ -51,7 +51,7 @@ class CarteiraController extends BaseController
     }
 
     #[Route('/carteira', name: 'app_cateira_transacao_create', methods: ['POST'])]
-    public function create(Request $request, TransacaoFactory $transacaoFactory, TransacaoRepository $transacaoRepository)
+    public function create(Request $request, TransacaoFactory $transacaoFactory, TransacaoRepository $transacaoRepository): Response
     {
         $user = $this->getUser(); /** @var User $user */
 
@@ -80,7 +80,7 @@ class CarteiraController extends BaseController
         if (!is_null($acaoCarteira)) {
             $valorTotalOld = $acaoCarteira->getQuantidade() * $acaoCarteira->getPrecoMedio();
             $valorTotalNew = $transacao->getValor() * $transacao->getQuantidade();
-            $novaQuantidade = $acaoCarteira->getQuantidade;
+            $novaQuantidade = $acaoCarteira->getQuantidade();
 
             if ($transacao->getTipo()->getId() == TipoTransacao::$COMPRA) {
                 $novaQuantidade += $transacao->getQuantidade();
@@ -107,6 +107,29 @@ class CarteiraController extends BaseController
         $acaoCarteira = CarteiraFactory::create($transacao);
 
         $this->carteiraRepository->add($acaoCarteira, true);
+
+        return $this->redirectToRoute('app_carteira');
+    }
+
+    #[Route('/carteira/delete/{id}', name: 'app_cateira_transacao_delete', methods: ['GET'])]
+    public function delete(int $id, TransacaoRepository $transacaoRepository, CarteiraRepository $carteiraRepository): Response
+    {
+        $transacoes = $transacaoRepository->findBy([
+            'acao' => $id
+        ]);
+        foreach ($transacoes as $transacao) {
+            $transacaoRepository->remove($transacao);
+        }
+        $transacaoRepository->flush();
+
+        $carteira = $carteiraRepository->findOneBy([
+            'acao' => $id
+        ]);
+        if (!is_null($carteira)) {
+            $carteiraRepository->remove($carteira, true);
+        }
+
+        $this->addFlash('success' ,'Ação excluída com sucesso');
 
         return $this->redirectToRoute('app_carteira');
     }
@@ -163,12 +186,12 @@ class CarteiraController extends BaseController
         $isVenda = $transacao->getTipo()->getId() == TipoTransacao::$VENDA;
 
         if (is_null($acaoCarteira) && $isVenda) {
-            $this->addFlash('danger', 'Você não tinha ativos suficientes para tal transação.');
+            $this->addFlash('danger', 'Você não tem ativos suficientes para realizar tal transação.');
             return false;
         }
 
         if ($isVenda && $acaoCarteira->getQuantidade() < $transacao->getQuantidade()) {
-            $this->addFlash('danger', 'Você não tinha ativos suficientes para tal transação.');
+            $this->addFlash('danger', 'Você não tem ativos suficientes para realizar tal transação.');
             return false;
         }
 

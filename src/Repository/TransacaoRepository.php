@@ -39,6 +39,11 @@ class TransacaoRepository extends ServiceEntityRepository
         }
     }
 
+    public function flush(): void
+    {
+        $this->getEntityManager()->flush();
+    }
+
 //    /**
 //     * @return Transacao[] Returns an array of Transacao objects
 //     */

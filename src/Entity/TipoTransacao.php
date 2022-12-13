@@ -12,7 +12,6 @@ class TipoTransacao
     public static string $VENDA = "2";
 
     #[ORM\Id]
-    #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 

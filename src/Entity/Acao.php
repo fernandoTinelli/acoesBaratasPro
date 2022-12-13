@@ -188,4 +188,13 @@ class Acao
 
         return $this;
     }
+
+    public function toArray(): array
+    {
+        return [
+            "id" => $this->id,
+            "nome" => $this->nome,
+            "codigo" => $this->codigo
+        ];
+    }
 }
