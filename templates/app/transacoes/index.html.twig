@@ -50,7 +50,7 @@
                                         <a href="#" data-toggle="tooltip" data-placement="left" title="Alterar" onclick="alterarTransacao({{ transacao.id }})">
                                             <i class="material-icons">edit</i>
                                         </a>
-                                        <a href="#" data-toggle="tooltip" data-placement="left" title="Deletar" >
+                                        <a href="{{ path('app_transacoes_delete', {transacao: transacao.id, id: carteira.id }) }}" data-toggle="tooltip" data-placement="left" title="Deletar" >
                                             <i class="material-icons">delete</i>
                                         </a>
                                     </td>                                
@@ -74,16 +74,16 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="frm" action="{{ path('app_cateira_transacao_create') }}" method="POST">
+                    <form id="frm" action="{{ path('app_transacoes_update', {id: carteira.id}) }}" method="POST">
                         <div class="form-group">
                             <label for="acao">Ação</label>
-                            <select name="_acao" id="acao" class="form-control" required="true" disabled>
+                            <select id="acao" class="form-control" required="true" disabled>
                                 <option value="{{ acao['id'] }}">{{ acao['codigo'] }}</option>
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="data">Data</label>
-                            <input type="date" class="form-control" id="data" name="_data" required="true" value=>
+                            <input type="date" class="form-control" id="data" name="_data" required="true">
                         </div>
                         <div class="form-group">
                             <label for="tipo">Tipo</label>
@@ -101,6 +101,9 @@
                             <label for="valor">Valor (R$)</label>
                             <input type="number" class="form-control" id="valor" name="_valor" placeholder="Valor" step="any" required="true">
                         </div>
+
+                        <input type="hidden" name="_acao" id="hidden_acao">
+                        <input type="hidden" name="_transacao" id="transacao">
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -124,10 +127,12 @@
             let tipo = transacao.children[3].attributes['value'].value;
             let valor = transacao.children[4].innerText;
 
-            document.querySelector('#data').valueAsDate = new Date(data);            
+            document.querySelector('#hidden_acao').value = document.querySelector('#acao').options[document.querySelector('#acao').options.selectedIndex].value;
+            document.querySelector('#data').valueAsDate = new Date(data.split('/')[2], +data.split('/')[1] - 1, data.split('/')[0]);            
             document.querySelector('#tipo').value = tipo;
             document.querySelector('#quantidade').value = quantidade;
             document.querySelector('#valor').value = parseFloat(valor.replace('R$', '').trim());
+            document.querySelector('#transacao').value = id;
         }
     </script>
 {% endblock javascripts %}

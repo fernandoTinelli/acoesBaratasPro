@@ -134,6 +134,58 @@ class CarteiraController extends BaseController
         return $this->redirectToRoute('app_carteira');
     }
 
+    #[Route('/transacao/{id}/update', name: 'app_transacoes_update', methods: ['POST'])]
+    public function update(
+        int $id,
+        CarteiraRepository $carteiraRepository,
+        TransacaoRepository $transacaoRepository,
+        Request $request,
+        TransacaoFactory $transacaoFactory
+    ) {
+        $user = $this->getUser(); /** @var User $user */
+
+        $transacao = $request->request->get('_transacao');
+
+        $transacaoObject = $transacaoRepository->find($transacao);
+        $transacaoObjectNew = $transacaoFactory->create($request->request->all(), $user);
+
+        $transacaoObject->setData($transacaoObjectNew->getData());
+        $transacaoObject->setTipo($transacaoObjectNew->getTipo());
+        $transacaoObject->setQuantidade($transacaoObjectNew->getQuantidade());
+        $transacaoObject->setValor($transacaoObjectNew->getValor());
+
+        $carteira = $carteiraRepository->find($id);
+
+        // Sumarizar Transações na Tabela Carteira
+        $transacoes = $transacaoRepository->findBy([
+            'usuario' => $carteira->getUser(),
+            'acao' => $carteira->getAcao()
+        ]);
+
+        $novoPrecoMedio = 0;
+        $novaQuantidade = 0;
+        foreach ($transacoes as $tran) {
+            /** @var Transacao $tran */
+            if ($transacao == $tran->getId()) {
+                $novaQuantidade = $transacaoObject->getQuantidade();
+                $novoPrecoMedio += $transacaoObject->getValor();
+                continue;
+            }
+
+            $novoPrecoMedio += $tran->getValor();
+        }
+
+        $novoPrecoMedio /= $novaQuantidade;
+
+        $carteira->setQuantidade($novaQuantidade);
+        $carteira->setPrecoMedio($novoPrecoMedio);
+
+        $transacaoRepository->add($transacaoObject, true);
+        $carteiraRepository->add($carteira, true);
+
+        return $this->redirectToRoute('app_transacoes_index', ['id' => $id]);
+    }
+
     private function validarTransacao(Request $request): bool
     {
         $isValid = true;
