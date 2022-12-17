@@ -35,17 +35,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'usuario', targetEntity: Transacao::class)]
     private Collection $transacaos;
 
-    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
-    private ?Carteira $carteira = null;
-
     #[ORM\OneToMany(mappedBy: 'user', targetEntity: Carteira::class, orphanRemoval: true)]
     private Collection $carteiras;
+
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Star::class, orphanRemoval: true)]
+    private Collection $stars;
 
     public function __construct()
     {
         $this->acaoRejeitadas = new ArrayCollection();
         $this->transacaos = new ArrayCollection();
         $this->carteiras = new ArrayCollection();
+        $this->stars = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -201,22 +202,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this->carteiras;
     }
 
-    public function addCarteira(Carteira $carteira): self
+    /**
+     * @return Collection<int, Star>
+     */
+    public function getStars(): Collection
     {
-        if (!$this->carteiras->contains($carteira)) {
-            $this->carteiras->add($carteira);
-            $carteira->setUser($this);
+        return $this->stars;
+    }
+
+    public function addStar(Star $star): self
+    {
+        if (!$this->stars->contains($star)) {
+            $this->stars->add($star);
+            $star->setUser($this);
         }
 
         return $this;
     }
 
-    public function removeCarteira(Carteira $carteira): self
+    public function removeStar(Star $star): self
     {
-        if ($this->carteiras->removeElement($carteira)) {
+        if ($this->stars->removeElement($star)) {
             // set the owning side to null (unless already changed)
-            if ($carteira->getUser() === $this) {
-                $carteira->setUser(null);
+            if ($star->getUser() === $this) {
+                $star->setUser(null);
             }
         }
 

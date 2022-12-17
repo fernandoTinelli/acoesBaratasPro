@@ -29,6 +29,16 @@
         {% endif %}
 
         {% if is_granted('ROLE_USER') %}
+          {% if path == '/lista/acoes/stars' %}
+          <li class="active">  
+          {% else %}
+          <li>
+          {% endif %}
+            <a href="{{ path('app_stars_index') }}"><i class="material-icons">star</i><span>Seguindo</span></a>
+          </li>
+        {% endif %}
+
+        {% if is_granted('ROLE_USER') %}
           {% if path == '/lista/acoes/baratas' %}
           <li class="active">  
           {% else %}

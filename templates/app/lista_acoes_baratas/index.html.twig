@@ -50,6 +50,16 @@
                                     <td>{{ acao.margemEbit|number_format(2, ',', '.') }}%</td>
                                     <td>{{ acao.evEbit|number_format(2, ',', '.') }}</td>
                                     <td>
+                                        {% if stars[acao.id] is defined %}
+                                            <a href="{{ path('app_starts_remove', {id: acao.id}) }}" data-toggle="tooltip" data-placement="left" title="Deixar de Seguir">
+                                                <i class="material-icons">star_half</i>
+                                            </a>
+                                        {% else %}
+                                            <a href="{{ path('app_starts_create', {id: acao.id}) }}" data-toggle="tooltip" data-placement="left" title="Seguir">
+                                                <i class="material-icons">star</i>
+                                            </a>
+                                        {% endif %}
+                                        
                                         <a href="{{ path('app_acao_rejeitada_create', {id: acao.id}) }}" data-toggle="tooltip" data-placement="left" title="Rejeitar" >
                                             <i class="material-icons">thumb_down_off_alt</i>
                                         </a>

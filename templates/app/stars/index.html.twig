@@ -1,0 +1,49 @@
+{% extends 'app/layout.html.twig' %}
+
+{% block page_contents %}
+    {# ---Main Content--- #}
+    <div class="row">
+        {% for label, messages in app.flashes(['success', 'danger', 'info']) %}
+            {# read and display several types of flash messages #}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show ml-3 mr-3 mw-100" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        
+        <div class="col-lg-12 col-md-12">
+            <div class="card">
+                <div class="card-header card-header-text">
+                    <h4 class="card-title">Monitoramento de Ações</h4>
+                    <small>Total: {{ acoes | length }}</small>
+                </div>
+                <div class="card-content table-responsive">
+                </div>
+            </div>
+        </div>
+
+        {% for acao in acoes %}
+            <div class="col-lg-3 col-md-4 col-sm-6 col-12">
+                <div class="card">
+                    <div class="card-header card-header-text">
+                        <h4 class="card-title d-inline">{{ acao.codigo }}</h4>
+                        <small>{{ acao.nome }}</small>
+                    </div>
+                    <div class="card-content">
+                        <p class="font-weight-bold">R$ {{ acao.preco }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        
+    </script>
+{% endblock javascripts %}

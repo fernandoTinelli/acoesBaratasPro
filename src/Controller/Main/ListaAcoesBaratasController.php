@@ -4,6 +4,7 @@ namespace App\Controller\Main;
 
 use App\Controller\BaseController;
 use App\Entity\Acao;
+use App\Helper\ArrayUtils;
 use App\Repository\AcaoRepository;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,14 +36,22 @@ class ListaAcoesBaratasController extends BaseController
             ? 0 
             : $request->query->getInt('offset', 0);
 
+        $acoesStar = [];
+        foreach ($user->getStars() as $star) {
+            $acoesStar[$star->getAcao()->getId()] = true;
+        }
+
         // $this->setVariableTitle('Lista de Ações Baratas da Bolsa');
         $this->setVariables([
             'acoes' => $acoesAccepteds,
             'acoesShow' => array_slice($acoesAccepteds, $offset, min(count($acoesAccepteds), AcaoRepository::$PAGINATOR_PER_PAGE)),
             'previous' => $offset - AcaoRepository::$PAGINATOR_PER_PAGE,
             'next' => min(count($acoesAccepteds), $offset + AcaoRepository::$PAGINATOR_PER_PAGE),
-            'offset' => $offset
+            'offset' => $offset,
+            'stars' => $acoesStar
         ]);
+
+        // dd($this->getVariables($request));
 
         return $this->render('app/lista_acoes_baratas/index.html.twig', $this->getVariables($request));
     }

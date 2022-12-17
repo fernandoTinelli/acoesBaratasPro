@@ -39,10 +39,14 @@ class Acao
     #[ORM\OneToMany(mappedBy: 'acao', targetEntity: Transacao::class, orphanRemoval: true)]
     private Collection $transacaos;
 
+    #[ORM\OneToMany(mappedBy: 'acao', targetEntity: Star::class, orphanRemoval: true)]
+    private Collection $stars;
+
     public function __construct()
     {
         $this->acaoRejeitadas = new ArrayCollection();
         $this->transacaos = new ArrayCollection();
+        $this->stars = new ArrayCollection();
     }
 
     private function setId(int $id): self
@@ -196,5 +200,35 @@ class Acao
             "nome" => $this->nome,
             "codigo" => $this->codigo
         ];
+    }
+
+    /**
+     * @return Collection<int, Star>
+     */
+    public function getStars(): Collection
+    {
+        return $this->stars;
+    }
+
+    public function addStar(Star $star): self
+    {
+        if (!$this->stars->contains($star)) {
+            $this->stars->add($star);
+            $star->setAcao($this);
+        }
+
+        return $this;
+    }
+
+    public function removeStar(Star $star): self
+    {
+        if ($this->stars->removeElement($star)) {
+            // set the owning side to null (unless already changed)
+            if ($star->getAcao() === $this) {
+                $star->setAcao(null);
+            }
+        }
+
+        return $this;
     }
 }
