@@ -76,7 +76,7 @@
 
         {% if is_granted('ROLE_ADMIN') %}
         <li class="">
-          <a href="#"><i class="material-icons">timeline</i><span>Estatísticas</span></a>
+          <a href="{{ path('app_estatisticas_index') }}"><i class="material-icons">timeline</i><span>Estatísticas</span></a>
         </li>
         {% endif %}
       </ul>
