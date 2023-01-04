@@ -22,20 +22,34 @@ class EstatisticasModel
             ->modify("last day of this month")
             ->format('Y-m-d');
 
-        $criteria = (new Criteria())
+        $qb = $this->transacaoRepository->createQueryBuilder('a');
+        $query = $qb
+            ->select('a.nome')
             ->where(
-                Criteria::expr()
-                    ->andX(
-                        Criteria::expr()->gte('data', new DateTime($firstDayOfMonth)),
-                        Criteria::expr()->lte('data', new DateTime($lastDayOfMonth))
-                    )
+                'a.data between (\'' . (new DateTime($firstDayOfMonth))->format('Y/m/d') . '\', \'' . (new DateTime($lastDayOfMonth))->format('Y/m/d') . '\')'
             )
-            ->orderBy([
-                'data' => 'DESC'
-            ])
-            ->setMaxResults(5);
+            ->groupBy('a.id')
+            ->orderBy('a.data', 'DESC')
+            ->setMaxResults(5)
+            ->getQuery();
 
-        return $this->transacaoRepository
-            ->matching($criteria)->toArray();
+        dd($query);
+
+        // $criteria = (new Criteria())
+        //     ->where(
+        //         Criteria::expr()
+        //             ->andX(
+        //                 Criteria::expr()->gte('data', new DateTime($firstDayOfMonth)),
+        //                 Criteria::expr()->lte('data', new DateTime($lastDayOfMonth))
+        //             )
+        //     )
+        //     ->orderBy([
+        //         'data' => 'DESC'
+        //     ])
+        //     ->setMaxResults(5);
+
+        dd($query->getResult());
+
+        return [];
     }
 }

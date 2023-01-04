@@ -12,7 +12,11 @@ import Chart from 'chart.js/auto';
  * Delete this file or adapt it for your use!
  */
 export default class extends Controller {
+    static values = {
+        graph1: String
+    };
+
     connect() {
-        console.log('teste');
+        console.log(this.graph1Value);
     }
 }

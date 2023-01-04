@@ -4,6 +4,7 @@
 
 {% block stylesheets %}
   <link href="{{ asset('/app_index/css/custom.css') }}" rel="stylesheet">
+  {{ encore_entry_link_tags('app') }}
 {% endblock %}
 
 {% block content %}
@@ -173,8 +174,9 @@
   </div>
 {% endblock %}
 
-
 {% block javascripts %}
+  {{ encore_entry_script_tags('app') }}
+
   <script type="text/javascript">
     $().ready(() => {
       $("#sidebar-collapse").on('click', () => {

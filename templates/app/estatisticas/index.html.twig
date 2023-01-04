@@ -2,7 +2,7 @@
 
 {% block page_contents %}
     {# ---Main Content--- #}
-    <div class="row" {{ stimulus_controller('estatisticas') }}>
+    <div class="row" data-controller='estatisticas'>
         {% for label, messages in app.flashes(['success', 'danger', 'info']) %}
             {# read and display several types of flash messages #}
             {% for message in messages %}
@@ -26,7 +26,7 @@
                 </div>
                 <div class="card-content">
                     <div style="width: 100%;">
-                        <canvas id="graph1"></canvas>
+                        <canvas id="graph1" data-controller="estatisticas" data-estatisticas-graph1-value='{"data": [123,12]}'></canvas>
                     </div>
                 </div>
             </div>
@@ -83,9 +83,22 @@
 {% endblock %}
 
 {% block javascripts %}
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    {{ encore_entry_script_tags('app') }}
     <script type="text/javascript">
-        graphCard1();
+        $().ready(() => {
+            $("#sidebar-collapse").on('click', () => {
+                $('#sidebar').toggleClass('active');
+                $('#content').toggleClass('active');
+            });
+
+            $(".more-button, .body-overlay").on('click', () => {
+                $('#sidebar, .body-overlay').toggleClass('show-nav');
+            });
+        });
+    </script>
+    {# <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> #}
+    <script type="text/javascript">
+        {# graphCard1();
 
         function graphCard1() {
             const date = new Date();
@@ -115,6 +128,6 @@
                     ]
                 }
             });
-        }
+        } #}
     </script>
 {% endblock javascripts %}

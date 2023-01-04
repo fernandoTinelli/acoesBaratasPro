@@ -27,6 +27,10 @@ class EstatisticasController extends BaseController
 
         $top5AcoesCompradasMes = $this->estatisticasModel->getTop5AcoesCompradasMes();
 
+        dd($top5AcoesCompradasMes);
+
+        $this->setVariable('graph1', $top5AcoesCompradasMes);
+
         return $this->render('app/estatisticas/index.html.twig', $this->getVariables());
     }
 }
