@@ -4,11 +4,6 @@ namespace App\Controller\Main;
 
 use App\Controller\BaseController;
 use App\Model\EstatisticasModel;
-use App\Repository\AcaoRepository;
-use App\Repository\TransacaoRepository;
-use DateTime;
-use Doctrine\Common\Collections\Criteria;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -24,12 +19,13 @@ class EstatisticasController extends BaseController
     #[Route('/estatisticas', name: 'app_estatisticas_index')]
     public function index(): Response
     {
-
         $top5AcoesCompradasMes = $this->estatisticasModel->getTop5AcoesCompradasMes();
+        $top5AcoesVendidasMes = $this->estatisticasModel->getTop5AcoesVendidasMes();
 
-        dd($top5AcoesCompradasMes);
-
-        $this->setVariable('graph1', $top5AcoesCompradasMes);
+        $this->setVariables([
+            'graph1' => $top5AcoesCompradasMes,
+            'graph2' => $top5AcoesVendidasMes
+        ]);
 
         return $this->render('app/estatisticas/index.html.twig', $this->getVariables());
     }

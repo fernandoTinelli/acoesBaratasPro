@@ -26,7 +26,7 @@
                 </div>
                 <div class="card-content">
                     <div style="width: 100%;">
-                        <canvas id="graph1" data-controller="estatisticas" data-estatisticas-graph1-value='{"data": [123,12]}'></canvas>
+                        <canvas id="graph1"></canvas>
                     </div>
                 </div>
             </div>
@@ -96,9 +96,10 @@
             });
         });
     </script>
-    {# <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> #}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script type="text/javascript">
-        {# graphCard1();
+        graphCard1();
+        graphCard2();
 
         function graphCard1() {
             const date = new Date();
@@ -107,27 +108,49 @@
                 .replace(/^\w/, c => c.toUpperCase());
 
             const data = [
-                { year: 2010, count: 10 },
-                { year: 2011, count: 20 },
-                { year: 2012, count: 15 },
-                { year: 2013, count: 25 },
-                { year: 2014, count: 22 },
-                { year: 2015, count: 30 },
-                { year: 2016, count: 28 },
+                {% for transacao in graph1 %}
+                    { acao: '{{ transacao.nome }}', total: {{ transacao.total}}},
+                {% endfor %}
             ];
 
             new Chart(document.getElementById('graph1'), {
                 type: 'bar',
                 data: {
-                    labels: data.map(row => row.year),
+                    labels: data.map(row => row.acao),
                     datasets: [
                     {
-                        label: `Aquisições em ${month}`,
-                        data: data.map(row => row.count)
+                        label: `Compras em ${month}`,
+                        data: data.map(row => row.total)
                     }
                     ]
                 }
             });
-        } #}
+        }
+
+        function graphCard2() {
+            const date = new Date();
+            const month = date
+                .toLocaleString("default", { month: "long" })
+                .replace(/^\w/, c => c.toUpperCase());
+
+            const data = [
+                {% for transacao in graph2 %}
+                    { acao: '{{ transacao.nome }}', total: {{ transacao.total}}},
+                {% endfor %}
+            ];
+
+            new Chart(document.getElementById('graph2'), {
+                type: 'bar',
+                data: {
+                    labels: data.map(row => row.acao),
+                    datasets: [
+                    {
+                        label: `Vendas em ${month}`,
+                        data: data.map(row => row.total)
+                    }
+                    ]
+                }
+            });
+        }
     </script>
 {% endblock javascripts %}
