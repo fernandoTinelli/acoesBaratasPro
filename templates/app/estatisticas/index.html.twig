@@ -46,7 +46,7 @@
         <div class="col-sm-6 col-12">
             <div class="card">
                 <div class="card-header card-header-text">
-                    <h4 class="card-title d-inline">Total Compras Ações no Mês</h4>
+                    <h4 class="card-title d-inline">Total Compras Mês a Mês</h4>
                 </div>
                 <div class="card-content">
                     <div style="width: 100%;">
@@ -58,7 +58,7 @@
         <div class="col-sm-6 col-12">
             <div class="card">
                 <div class="card-header card-header-text">
-                    <h4 class="card-title d-inline">Total Vendas Ações no Mês</h4>
+                    <h4 class="card-title d-inline">Total Vendas Mês a Mês</h4>
                 </div>
                 <div class="card-content">
                     <div style="width: 100%;">
@@ -100,6 +100,8 @@
     <script type="text/javascript">
         graphCard1();
         graphCard2();
+        graphCard3();
+        graphCard4();
 
         function graphCard1() {
             const date = new Date();
@@ -146,6 +148,58 @@
                     datasets: [
                     {
                         label: `Vendas em ${month}`,
+                        data: data.map(row => row.total)
+                    }
+                    ]
+                }
+            });
+        }
+
+        function graphCard3() {
+            const date = new Date();
+            const month = date
+                .toLocaleString("default", { month: "long" })
+                .replace(/^\w/, c => c.toUpperCase());
+
+            const data = [
+                {% for key,value in graph3 %}
+                    { mes: '{{ (key + 1) }}', total: {{ value }}},
+                {% endfor %}
+            ];
+
+            new Chart(document.getElementById('graph3'), {
+                type: 'bar',
+                data: {
+                    labels: data.map(row => row.mes),
+                    datasets: [
+                    {
+                        label: `Total Compras no Mês`,
+                        data: data.map(row => row.total)
+                    }
+                    ]
+                }
+            });
+        }
+
+        function graphCard4() {
+            const date = new Date();
+            const month = date
+                .toLocaleString("default", { month: "long" })
+                .replace(/^\w/, c => c.toUpperCase());
+
+            const data = [
+                {% for key,value in graph4 %}
+                    { mes: '{{ (key + 1) }}', total: {{ value }}},
+                {% endfor %}
+            ];
+
+            new Chart(document.getElementById('graph4'), {
+                type: 'bar',
+                data: {
+                    labels: data.map(row => row.mes),
+                    datasets: [
+                    {
+                        label: `Total Vendas no Mês`,
                         data: data.map(row => row.total)
                     }
                     ]

@@ -21,10 +21,14 @@ class EstatisticasController extends BaseController
     {
         $top5AcoesCompradasMes = $this->estatisticasModel->getTop5AcoesCompradasMes();
         $top5AcoesVendidasMes = $this->estatisticasModel->getTop5AcoesVendidasMes();
+        $comprasMesAMes = $this->estatisticasModel->getTotalComprasMesAMes();
+        $vendasMesAMes = $this->estatisticasModel->getTotalVendasMesAMes();
 
         $this->setVariables([
             'graph1' => $top5AcoesCompradasMes,
-            'graph2' => $top5AcoesVendidasMes
+            'graph2' => $top5AcoesVendidasMes,
+            'graph3' => $comprasMesAMes,
+            'graph4' => $vendasMesAMes,
         ]);
 
         return $this->render('app/estatisticas/index.html.twig', $this->getVariables());

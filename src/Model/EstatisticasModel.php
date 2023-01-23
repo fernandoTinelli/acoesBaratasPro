@@ -22,4 +22,14 @@ class EstatisticasModel
     {
         return $this->transacaoRepository->fetchTop5AcoesVendidasMes();
     }
+
+    public function getTotalComprasMesAMes(): array
+    {
+        return $this->transacaoRepository->fetchComprasMesAMes();
+    }
+
+    public function getTotalVendasMesAMes(): array
+    {
+        return $this->transacaoRepository->fetchVendasMesAMes();
+    }
 }

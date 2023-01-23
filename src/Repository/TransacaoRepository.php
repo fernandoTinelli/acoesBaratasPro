@@ -95,6 +95,72 @@ class TransacaoRepository extends ServiceEntityRepository
         return $result->fetchAllAssociative();
     }
 
+    public function fetchComprasMesAMes(): array
+    {
+        $comprasMesAMes = [];
+        $year = (new DateTime())->format('Y');
+
+        for ($i = 1; $i <= 12; $i++) { 
+            $month = str_pad($i, 2, '0', STR_PAD_LEFT);
+            $firstDayOfMonth = date("Y-$month-01");
+            $lastDayOfMonth = (new DateTime("$year-$month-01"))
+                ->modify("last day of this month")
+                ->format('Y-m-d');
+
+            $stmt = $this->getEntityManager()->getConnection()->prepare('
+                SELECT SUM(t.quantidade) AS total
+                FROM acoesbaratas.transacao t JOIN acoesbaratas.acao a ON t.acao_id = a.id
+                WHERE t.data BETWEEN "' . $firstDayOfMonth . '" AND "' . $lastDayOfMonth . '" AND t.tipo_id = 1
+                GROUP BY t.tipo_id
+                ORDER BY t.data
+            ');
+
+            $result = $stmt->executeQuery();
+
+            if ($result->rowCount() == 0) {
+                $comprasMesAMes[] = "0";
+                continue;
+            }
+
+            $comprasMesAMes[] = $result->fetchOne();
+        }
+
+        return $comprasMesAMes;
+    }
+
+    public function fetchVendasMesAMes(): array
+    {
+        $vendasMesAMes = [];
+        $year = (new DateTime())->format('Y');
+
+        for ($i = 1; $i <= 12; $i++) { 
+            $month = str_pad($i, 2, '0', STR_PAD_LEFT);
+            $firstDayOfMonth = date("Y-$month-01");
+            $lastDayOfMonth = (new DateTime("$year-$month-01"))
+                ->modify("last day of this month")
+                ->format('Y-m-d');
+
+            $stmt = $this->getEntityManager()->getConnection()->prepare('
+                SELECT SUM(t.quantidade) AS total
+                FROM acoesbaratas.transacao t JOIN acoesbaratas.acao a ON t.acao_id = a.id
+                WHERE t.data BETWEEN "' . $firstDayOfMonth . '" AND "' . $lastDayOfMonth . '" AND t.tipo_id = 2
+                GROUP BY t.tipo_id
+                ORDER BY t.data
+            ');
+
+            $result = $stmt->executeQuery();
+
+            if ($result->rowCount() == 0) {
+                $vendasMesAMes[] = "0";
+                continue;
+            }
+
+            $vendasMesAMes[] = $result->fetchOne();
+        }
+
+        return $vendasMesAMes;
+    }
+
 //    /**
 //     * @return Transacao[] Returns an array of Transacao objects
 //     */
