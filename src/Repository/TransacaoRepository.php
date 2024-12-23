@@ -54,7 +54,7 @@ class TransacaoRepository extends ServiceEntityRepository
 
         $stmt = $this->getEntityManager()->getConnection()->prepare('
             SELECT t.acao_id, SUM(t.quantidade) AS total, a.nome
-            FROM acoesbaratas.transacao t JOIN acoesbaratas.acao a ON t.acao_id = a.id
+            FROM acoes_baratas.transacao t JOIN acoes_baratas.acao a ON t.acao_id = a.id
             WHERE t.data BETWEEN "' . $firstDayOfMonth . '" AND "' . $lastDayOfMonth . '" AND t.tipo_id = 1
             GROUP BY t.acao_id 
             ORDER BY total DESC
@@ -79,7 +79,7 @@ class TransacaoRepository extends ServiceEntityRepository
 
         $stmt = $this->getEntityManager()->getConnection()->prepare('
             SELECT t.acao_id, SUM(t.quantidade) AS total, a.nome
-            FROM acoesbaratas.transacao t JOIN acoesbaratas.acao a ON t.acao_id = a.id
+            FROM acoes_baratas.transacao t JOIN acoes_baratas.acao a ON t.acao_id = a.id
             WHERE t.data BETWEEN "' . $firstDayOfMonth . '" AND "' . $lastDayOfMonth . '" AND t.tipo_id = 2
             GROUP BY t.acao_id 
             ORDER BY total DESC
@@ -109,7 +109,7 @@ class TransacaoRepository extends ServiceEntityRepository
 
             $stmt = $this->getEntityManager()->getConnection()->prepare('
                 SELECT SUM(t.quantidade) AS total
-                FROM acoesbaratas.transacao t JOIN acoesbaratas.acao a ON t.acao_id = a.id
+                FROM acoes_baratas.transacao t JOIN acoes_baratas.acao a ON t.acao_id = a.id
                 WHERE t.data BETWEEN "' . $firstDayOfMonth . '" AND "' . $lastDayOfMonth . '" AND t.tipo_id = 1
                 GROUP BY t.tipo_id
                 ORDER BY t.data
@@ -142,7 +142,7 @@ class TransacaoRepository extends ServiceEntityRepository
 
             $stmt = $this->getEntityManager()->getConnection()->prepare('
                 SELECT SUM(t.quantidade) AS total
-                FROM acoesbaratas.transacao t JOIN acoesbaratas.acao a ON t.acao_id = a.id
+                FROM acoes_baratas.transacao t JOIN acoes_baratas.acao a ON t.acao_id = a.id
                 WHERE t.data BETWEEN "' . $firstDayOfMonth . '" AND "' . $lastDayOfMonth . '" AND t.tipo_id = 2
                 GROUP BY t.tipo_id
                 ORDER BY t.data

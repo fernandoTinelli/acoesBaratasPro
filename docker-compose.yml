@@ -4,7 +4,7 @@ services:
     container_name: my-mysql
     restart: always
     environment:
-      - MYSQL_DATABASE=acoesBaratas
+      - MYSQL_DATABASE=acoes_baratas
       - MYSQL_ROOT_PASSWORD=1234
       - MYSQL_USER=root
     ports:
