@@ -12,9 +12,9 @@ class ReaderSpreadsheet implements IReadFilter
         'A' => '_codigo',
         'B' => '_nome',
         'C' => '_preco',
-        'J' => '_margem_ebit', 
-        'W' => '_ev_ebit', 
-        'Z' => '_liquidez'
+        'M' => '_margem_ebit', 
+        'Z' => '_ev_ebit', 
+        'AG' => '_liquidez'
     ];
 
     public function readCell($column, $row, $worksheetName = '')
@@ -46,7 +46,7 @@ class ReaderSpreadsheet implements IReadFilter
                     $dataRow[ReaderSpreadsheet::$SPREADSHEET_COLUMNS[$key]] = match(true) {
                         is_float($cell->getValue()) => (float) $cell->getValue(),
                         $cell->getValue() !== 'NA' => (string) $cell->getValue(),
-                        default => 0
+                        default => -1
                     };
                 }
             }

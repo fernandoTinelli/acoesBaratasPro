@@ -44,8 +44,19 @@
                                 <th>Nome</th>
                                 <th>Preço Unitário</th>
                                 <th>Liquidez</th>
-                                <th>Margem Ebit</th>
-                                <th>Ev Ebit</th>
+                                <th>
+                                    Margem Ebit
+                                    <i class="material-icons" title="A margem EBIT é um indicador contábil que representa a porcentagem obtida ao dividir o lucro antes de juros e impostos (EBIT) pela receita líquida de uma empresa">
+                                        info
+                                    </i>
+                                </th>
+                                <th>
+                                    Ev/Ebit
+                                    <i class="material-icons" title="EV/EBIT é um indicador financeiro que compara o valor da empresa (EV) com o lucro antes de juros e impostos (EBIT). O objetivo é entender quantos anos de lucro operacional o mercado está disposto a pagar pelo valor total da empresa. 
+O EV/EBIT é útil para identificar o potencial de geração de lucros de uma empresa. Para fins comparativos, deve ser utilizado apenas entre empresas do mesmo setor e, de preferência, que sejam concorrentes diretas.">
+                                        info
+                                    </i>
+                                </th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -59,7 +70,7 @@
                                     <td>{{ acao.nome }}</td>
                                     <td>R$ {{ acao.preco|number_format(2, ',', '.') }}</td>
                                     <td>R$ {{ acao.liquidez|number_format(2, ',', '.') }}</td>
-                                    <td>{{ acao.margemEbit|number_format(2, ',', '.') }}%</td>
+                                    <td>{{ (acao.margemEbit*100)|number_format(2, ',', '.') }}%</td>
                                     <td>{{ acao.evEbit|number_format(2, ',', '.') }}</td>
                                     <td>
                                         <a href="{{ path('app_acoes_alter_index', {id: acao.id}) }}" data-toggle="tooltip" data-placement="left" title="Alterar">

@@ -41,7 +41,6 @@ class ListaAcoesBaratasController extends BaseController
             $acoesStar[$star->getAcao()->getId()] = true;
         }
 
-        // $this->setVariableTitle('Lista de Ações Baratas da Bolsa');
         $this->setVariables([
             'acoes' => $acoesAccepteds,
             'acoesShow' => array_slice($acoesAccepteds, $offset, min(count($acoesAccepteds), AcaoRepository::$PAGINATOR_PER_PAGE)),
@@ -50,8 +49,6 @@ class ListaAcoesBaratasController extends BaseController
             'offset' => $offset,
             'stars' => $acoesStar
         ]);
-
-        // dd($this->getVariables($request));
 
         return $this->render('app/lista_acoes_baratas/index.html.twig', $this->getVariables($request));
     }
@@ -67,8 +64,7 @@ class ListaAcoesBaratasController extends BaseController
 
         foreach ($acoes as $acao) {
             if (
-                $acao->getLiquidez() >= ListaAcoesBaratasController::$MIN_LIQUIDEZ_ACCEPTED &&
-                $acao->getMargemEbit() > ListaAcoesBaratasController::$MIN_MARGEM_EBIT_ACCPETED &&
+                $this->isAcaoBarata($acao) &&
                 !$this->isAcaoNumCodigoRecusada($acao->getCodigo()) &&
                 !$this->isAcaoRecusada($acao, $acoesRejeitadasIndexada)
             ) {
@@ -87,6 +83,13 @@ class ListaAcoesBaratasController extends BaseController
         usort($acoesAccepteds, fn(Acao $acao1, Acao $acao2) => $acao1->getEvEbit() <=> $acao2->getEvEbit());
 
         return $acoesAccepteds;
+    }
+
+    private function isAcaoBarata(Acao $acao): bool
+    {
+        return $acao->getLiquidez() >= ListaAcoesBaratasController::$MIN_LIQUIDEZ_ACCEPTED &&
+            $acao->getMargemEbit() > ListaAcoesBaratasController::$MIN_MARGEM_EBIT_ACCPETED &&
+            $acao->getEvEbit() > 0;
     }
 
     private function isAcaoRecusada(Acao $acao, array $acoesRejeitadas): bool
